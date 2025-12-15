@@ -198,9 +198,13 @@ function selectType(idx) {
     width: 90px;
     height: 160px;
   }
+    .bodytype-label {
+    font-size: 0.85rem;
+  }
+
 }
 
-@media (max-width: 600px) {
+@media (max-width: 499px) {
   .bodytype-title {
     font-size: 1.2rem;
   }
