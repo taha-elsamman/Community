@@ -1,0 +1,22 @@
+.bg-brand{
+  background: #f8f9fa;
+}
+
+.macro-squiggle {
+  margin: 0.8rem 0 2.2rem 0;
+  display: flex;
+  justify-content: center;
+}
+.snack-card  {
+  width: 100%;
+  max-width: 1200px;
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 12px 12px 24px 12px rgba(60,60,60,0.06);
+  padding: 2.5rem 2rem 2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+
+}
