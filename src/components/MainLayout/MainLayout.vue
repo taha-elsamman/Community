@@ -1,14 +1,21 @@
 <template>
 	<div class="main-layout" :class="{ 'sidebar-closed': !sidebarOpen }">
-		<MainNavbar>
-			<template #burger>
-				<button class="navbar-toggler" @click="sidebarOpen = !sidebarOpen" aria-label="Toggle sidebar">
+		<MainNavbar
+			:sidebarOpen="sidebarOpen"
+			@toggleSidebar="toggleSidebar"
+			@closeSidebar="closeSidebar"
+			@openSidebar="openSidebar"
+			@closeNavbar="closeNavbar"
+			@openNavbar="openNavbar"
+		>
+			<template #burger="{ onBurgerClick }">
+				<button class="navbar-toggler" @click="onBurgerClick" aria-label="Toggle sidebar">
 					<span class="navbar-toggler-icon"></span>
 				</button>
 			</template>
 		</MainNavbar>
 		<div class="layout-body">
-			<MainSidebar :open="sidebarOpen" />
+			<MainSidebar :open="sidebarOpen" @item-click="handleSidebarItemClick" />
 			<main class="layout-content">
 				<slot />
 			</main>
@@ -22,10 +29,33 @@ import MainNavbar from './MainNavbar.vue';
 import MainSidebar from './MainSidebar.vue';
 
 const sidebarOpen = ref(true);
+const navbarOpen = ref(false);
 
 const handleResize = () => {
 	sidebarOpen.value = window.innerWidth > 900;
 };
+
+function handleSidebarItemClick() {
+	if (window.innerWidth < 900) {
+		sidebarOpen.value = false;
+	}
+}
+
+function toggleSidebar() {
+	sidebarOpen.value = !sidebarOpen.value;
+}
+function closeSidebar() {
+	sidebarOpen.value = false;
+}
+function openSidebar() {
+	sidebarOpen.value = true;
+}
+function closeNavbar() {
+	navbarOpen.value = false;
+}
+function openNavbar() {
+	navbarOpen.value = true;
+}
 
 onMounted(() => {
 	handleResize();

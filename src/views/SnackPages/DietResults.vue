@@ -57,10 +57,7 @@ function goHome() {
 
 <style scoped>
 .dietresult-container {
-  min-height: 100vh;
-  min-width: 100vw;
-  width: 100vw;
-  height: 100vh;
+
   margin: 0;
   padding: 3rem 1rem 2rem 1rem;
   display: flex;

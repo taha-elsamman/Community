@@ -166,7 +166,6 @@
 
 .welcome-container {
   border-radius: 0.5rem;
-  max-width: 1100px;
   margin: 0 auto 0 2rem;
 }
 

@@ -1,22 +1,19 @@
+
 <template>
   <nav class="navbar navbar-expand-lg fixed-top bg-white">
     <div class="container-fluid">
-      <slot name="burger"></slot>
+      <slot name="burger" :onBurgerClick="handleBurgerClick"></slot>
       <a class="navbar-brand" href="/">
         <img src="/Projectlifetyle_Logo.png" alt="Logo" width="70" height="70" class="d-inline-block align-text-top" />
       </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" @click="toggleNavbar" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-
+      <div class="collapse navbar-collapse" :class="{ show: navbarOpen }" id="navbarSupportedContent">
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
         </form>
-
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
               NL
@@ -26,37 +23,64 @@
               <li><a class="dropdown-item" href="#">FR</a></li>
             </ul>
           </li>
-
-
           <li class="nav-item">
             <a class="nav-link active" aria-current="page" href="#">
               <img src="/Icons/conversation (1).png" alt="" width="30" height="30" />
             </a>
           </li>
-
-
           <li class="nav-item">
             <a class="nav-link" href="#">
-
               <img src="/Icons/bell.png" alt="" width="30" height="30" />
             </a>
           </li>
-
-
           <li class="nav-item">
             <a class="nav-link" href="#">
-
               <img src="/Icons/user (3).png" alt="" width="30" height="30" />
             </a>
           </li>
-
-
         </ul>
-
       </div>
     </div>
   </nav>
 </template>
+
+<script setup>
+import { ref, defineEmits, defineProps } from 'vue';
+
+const emits = defineEmits(['toggleSidebar', 'closeSidebar', 'closeNavbar', 'openSidebar', 'openNavbar']);
+const props = defineProps({
+  sidebarOpen: Boolean
+});
+
+const navbarOpen = ref(false);
+
+function toggleNavbar() {
+  if (props.sidebarOpen) {
+    emits('closeSidebar');
+    setTimeout(() => {
+      navbarOpen.value = !navbarOpen.value;
+      if (navbarOpen.value) emits('openNavbar');
+      else emits('closeNavbar');
+    }, 200);
+  } else {
+    navbarOpen.value = !navbarOpen.value;
+    if (navbarOpen.value) emits('openNavbar');
+    else emits('closeNavbar');
+  }
+}
+
+function handleBurgerClick() {
+  if (navbarOpen.value) {
+    navbarOpen.value = false;
+    emits('closeNavbar');
+    setTimeout(() => {
+      emits('toggleSidebar');
+    }, 200);
+  } else {
+    emits('toggleSidebar');
+  }
+}
+</script>
 
 <style>
   .navbar {
@@ -65,5 +89,4 @@
   .navbar-toggler {
     border: none !important;
   }
-
 </style>

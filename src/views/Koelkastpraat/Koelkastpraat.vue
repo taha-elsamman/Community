@@ -81,6 +81,126 @@
           img-position="right"
         />
       </template>
+      <template v-else-if="selectedDay === 2">
+        <LeftCard
+          layout-src="/borders/Frame Recipe archives.png"
+          img-src="/photos/yogurt.jpg"
+          img-alt="Yoghurt met granola"
+          title="Yoghurt met granola"
+          type="Ontbijt"
+          time="10 min"
+          user="2"
+          comment="2"
+          img-position="left"
+        />
+        <LeftCard
+          layout-src="/borders/Frame Recipe archives.png"
+          img-src="/photos/banana.webp"
+          img-alt="Banaan"
+          title="Banaan"
+          type="Tussendoortje"
+          time="1 min"
+          user="2"
+          comment="2"
+          img-position="right"
+        />
+      </template>
+      <template v-else-if="selectedDay === 3">
+        <LeftCard
+          layout-src="/borders/Frame Recipe archives.png"
+          img-src="/photos/sandwich.jpeg"
+          img-alt="Sandwich kipfilet"
+          title="Sandwich kipfilet"
+          type="Lunch"
+          time="15 min"
+          user="3"
+          comment="1"
+          img-position="left"
+        />
+        <LeftCard
+          layout-src="/borders/Frame Recipe archives.png"
+          img-src="/photos/soup.jpg"
+          img-alt="Tomatensoep"
+          title="Tomatensoep"
+          type="Avondeten"
+          time="30 min"
+          user="3"
+          comment="1"
+          img-position="right"
+        />
+      </template>
+      <template v-else-if="selectedDay === 4">
+        <LeftCard
+          layout-src="/borders/Frame Recipe archives.png"
+          img-src="/photos/pancakes.jpg"
+          img-alt="Pannenkoeken"
+          title="Pannenkoeken"
+          type="Ontbijt"
+          time="20 min"
+          user="4"
+          comment="2"
+          img-position="left"
+        />
+        <LeftCard
+          layout-src="/borders/Frame Recipe archives.png"
+          img-src="/photos/salad.jpg"
+          img-alt="Salade"
+          title="Salade"
+          type="Lunch"
+          time="10 min"
+          user="4"
+          comment="2"
+          img-position="right"
+        />
+      </template>
+      <template v-else-if="selectedDay === 5">
+        <LeftCard
+          layout-src="/borders/Frame Recipe archives.png"
+          img-src="/photos/eggs.jpg"
+          img-alt="Roerei"
+          title="Roerei"
+          type="Ontbijt"
+          time="8 min"
+          user="5"
+          comment="1"
+          img-position="left"
+        />
+        <LeftCard
+          layout-src="/borders/Frame Recipe archives.png"
+          img-src="/photos/pizza.jpg"
+          img-alt="Pizza"
+          title="Pizza"
+          type="Avondeten"
+          time="20 min"
+          user="5"
+          comment="1"
+          img-position="right"
+        />
+      </template>
+      <template v-else-if="selectedDay === 6">
+        <LeftCard
+          layout-src="/borders/Frame Recipe archives.png"
+          img-src="/photos/croissant.jpeg"
+          img-alt="Croissant"
+          title="Croissant"
+          type="Ontbijt"
+          time="5 min"
+          user="6"
+          comment="1"
+          img-position="left"
+        />
+        <LeftCard
+          layout-src="/borders/Frame Recipe archives.png"
+          img-src="/photos/lasagna.jpg"
+          img-alt="Lasagne"
+          title="Lasagne"
+          type="Avondeten"
+          time="40 min"
+          user="6"
+          comment="2"
+          img-position="right"
+        />
+      </template>
       <template v-else>
         <div class="weekmenu-empty">{{ days[selectedDay] }} | Geen menu voor deze dag.</div>
       </template>
@@ -204,11 +324,7 @@ function selectDay(idx) {
 .weekmenu-list {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
-  width: 80%;
   margin: 0 auto;
-  max-width: 700px;
-  min-width: 0;
 }
 
 .weekmenu-empty {
@@ -225,18 +341,11 @@ function selectDay(idx) {
     margin: 0;
     padding: 1.5rem 0.5rem 1rem 0.5rem;
   }
-  .weekmenu-list {
-    width: 98vw;
-    max-width: 98vw;
-    padding: 0;
-  }
 }
 
 @media (max-width: 900px) {
   .weekmenu-list {
     gap: 1.2rem;
-    width: 100vw;
-    max-width: 100vw;
   }
   .weekmenu-container {
     padding: 1.5rem 0.5rem 1rem 0.5rem;
@@ -252,10 +361,6 @@ function selectDay(idx) {
   }
   .weekmenu-list {
     gap: 0.7rem;
-    width: 100vw;
-    max-width: 100vw;
-    min-width: 0;
-    padding: 0;
   }
   .weekmenu-container {
     padding: 0.5rem 0.1rem 0.5rem 0.1rem;

@@ -2,29 +2,33 @@
 	<aside class="main-sidebar" :class="{ closed: !open }">
 		<ul class="sidebar-nav">
 			<li>
-				<router-link to="/" class="sidebar-link">De voordeur</router-link>
+				<router-link to="/" class="sidebar-link" @click="handleItemClick">De voordeur</router-link>
 			</li>
 			<li>
-				<router-link to="/koelkastpraat" class="sidebar-link">Koelkastpraat</router-link>
+				<router-link to="/koelkastpraat" class="sidebar-link" @click="handleItemClick">Koelkastpraat</router-link>
 			</li>
-			<li><a href="#">Bankhangen</a></li>
-			<li><a href="#">De keukentafel</a></li>
-			<li><a href="#">De wasmand</a></li>
-			<li><a href="#">De boodschappenlijst</a></li>
-			<li><a href="#">Lifestyle tips</a></li>
+			<li><a href="#" @click="handleItemClick">Bankhangen</a></li>
+			<li><a href="#" @click="handleItemClick">De keukentafel</a></li>
+			<li><a href="#" @click="handleItemClick">De wasmand</a></li>
+			<li><a href="#" @click="handleItemClick">De boodschappenlijst</a></li>
+			<li><a href="#" @click="handleItemClick">Lifestyle tips</a></li>
 		</ul>
 	</aside>
 </template>
 
 <script setup>
 import { RouterLink } from 'vue-router';
+import { defineEmits } from 'vue';
+const emit = defineEmits(['item-click']);
 defineProps({
-  open: {
-    type: Boolean,
-    default: true
-  }
+	open: {
+		type: Boolean,
+		default: true
+	}
 });
-// Sidebar logic (if needed)
+function handleItemClick() {
+	emit('item-click');
+}
 </script>
 
 <style scoped>
@@ -48,9 +52,20 @@ defineProps({
   box-shadow: none;
 }
 @media (max-width: 900px) {
-  .main-sidebar {
-    box-shadow: 2px 0 16px 0 rgba(60,60,60,0.08);
-  }
+	.main-sidebar {
+		box-shadow: 2px 0 16px 0 rgba(60,60,60,0.08);
+	}
+}
+
+@media (max-width: 600px) {
+	.main-sidebar {
+		width: 100vw;
+		left: 0;
+		border-right: none;
+		border-bottom: 1px solid #e0e0e0;
+		height: calc(100vh - 64px);
+		z-index: 3000;
+	}
 }
 
 .sidebar-nav {
