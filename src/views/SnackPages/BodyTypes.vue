@@ -63,8 +63,6 @@ function selectType(idx) {
 .bodytype-container {
   min-height: 100vh;
   min-width: 100vw;
-  width: 100vw;
-  height: 100vh;
   margin: 0;
   padding: 6rem 3rem 6rem 3rem;
   display: flex;

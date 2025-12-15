@@ -60,10 +60,11 @@
           </div>
         </div>
       </div>
-      <div class="aboutyou-footer">
-        <button class="aboutyou-nav aboutyou-nav-prev" @click="goToPrev">Vorige</button>
-        <button class="aboutyou-nav aboutyou-nav-next" @click="goToNext">Volgende</button>
+      <div class="aboutyou-nav">
+        <button class="aboutyou-btn aboutyou-btn-prev" @click="goToPrev">Vorige</button>
+        <button class="aboutyou-btn aboutyou-btn-next" @click="goToNext">Volgende</button>
       </div>
+
     </div>
   </div>
 </template>
@@ -91,8 +92,6 @@ function goToPrev() {
 .aboutyou-container {
   min-height: 100vh;
   min-width: 100vw;
-  width: 100vw;
-  height: 100vh;
   margin: 0;
   padding: 3rem 1rem 2rem 1rem;
   display: flex;
@@ -227,25 +226,27 @@ function goToPrev() {
   margin-left: 0.2rem;
 }
 
-.aboutyou-footer {
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  margin-top: 2.5rem;
-  max-width: 900px;
-}
+
 
 .aboutyou-nav {
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 2.5rem;
+}
+
+.aboutyou-btn {
   background: none;
   border: none;
-  font-family: 'Indie Flower', cursive, sans-serif;
-  font-size: 1.1rem;
   color: #e06ca9;
+  font-size: 1rem;
+  font-family: 'Indie Flower', cursive, sans-serif;
   cursor: pointer;
+  padding: 0.2rem 1.2rem;
   transition: color 0.2s;
 }
 
-.aboutyou-nav:hover {
+.aboutyou-btn:hover {
   color: #da2c89;
   text-decoration: underline;
 }

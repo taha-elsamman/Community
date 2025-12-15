@@ -58,9 +58,7 @@ function goHome() {
 
 <style scoped>
 html, body, #app, .dietresult-container {
-  width: 100vw;
-  min-height: 100vh;
-  height: 100vh;
+
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -68,7 +66,6 @@ html, body, #app, .dietresult-container {
 .dietresult-container {
   width: 100vw;
   min-height: 100vh;
-  height: 100vh;
   margin: 0;
   padding: 0;
   display: flex;

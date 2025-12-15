@@ -170,6 +170,8 @@ function selectIntensity(idx) {
 
 <style scoped>
 .weekques-container {
+  min-height: 100vh;
+  min-width: 100vw;
   margin: 0 auto;
   padding: 6rem 3rem 6rem 3rem;
   background: #fff;
