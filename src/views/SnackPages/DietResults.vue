@@ -1,3 +1,4 @@
+
 <template>
   <div class="dietresult-container">
     <div class="snack-card">
@@ -56,15 +57,24 @@ function goHome() {
 </script>
 
 <style scoped>
-.dietresult-container {
-
+html, body, #app, .dietresult-container {
+  width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
   margin: 0;
-  padding: 3rem 1rem 2rem 1rem;
+  padding: 0;
+  box-sizing: border-box;
+}
+.dietresult-container {
+  width: 100vw;
+  min-height: 100vh;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  /* Center vertically */
   background: #fff;
   box-sizing: border-box;
 }

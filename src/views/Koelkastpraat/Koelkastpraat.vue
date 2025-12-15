@@ -264,7 +264,6 @@ function selectDay(idx) {
   color: #888;
   font-family: inherit;
   cursor: pointer;
-  margin-top: 0.5rem;
   user-select: none;
 }
 
