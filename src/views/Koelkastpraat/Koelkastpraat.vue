@@ -35,7 +35,7 @@
     <div class="weekmenu-list">
       <template v-if="selectedDay === 0">
         <LeftCard
-          layout-src="/public/borders/Frame Recipe archives.png"
+          layout-src="/borders/Frame Recipe archives.png"
           img-src="/photos/oats.png"
           img-alt="Overnight oats met aardbeien"
           title="Overnight oats met aardbeien"
@@ -46,7 +46,7 @@
           img-position="left"
         />
         <LeftCard
-          layout-src="/public/borders/Frame Recipe archives.png"
+          layout-src="/borders/Frame Recipe archives.png"
           img-src="/photos/apple.png"
           img-alt="Appel"
           title="Appel"
@@ -59,7 +59,7 @@
       </template>
       <template v-else-if="selectedDay === 1">
         <LeftCard
-          layout-src="/public/borders/Frame Recipe archives.png"
+          layout-src="/borders/Frame Recipe archives.png"
           img-src="/photos/tosti.png"
           img-alt="Tosti"
           title="Tosti"
@@ -70,7 +70,7 @@
           img-position="left"
         />
         <LeftCard
-          layout-src="/public/borders/Frame Recipe archives.png"
+          layout-src="/borders/Frame Recipe archives.png"
           img-src="/photos/pasta.png"
           img-alt="Pasta"
           title="Pasta"

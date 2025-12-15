@@ -41,9 +41,9 @@ const props = defineProps({
   imgPosition: { type: String, default: 'left' }
 });
 
-const iconTime = props.iconTime || '/public/Icons/time icon.png';
-const iconUser = props.iconUser || '/public/Icons/user icon.png';
-const iconComment = props.iconComment || '/public/Icons/comment icon.png';
+const iconTime = props.iconTime || '/Icons/time icon.png';
+const iconUser = props.iconUser || '/Icons/user icon.png';
+const iconComment = props.iconComment || '/Icons/comment icon.png';
 </script>
 
 <style scoped>
