@@ -112,11 +112,48 @@
 
       </div>
     </div>
+    <!-- Kookpraat Section Start -->
+    <div class="kookpraat-section">
+      <div class="kookpraat-title">Kookpraat</div>
+      <div class="kookpraat-squiggle">
+        <svg width="120" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
+          <path
+            d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 T138 12 T158 12 T178 12 T198 12 T218 12 T238 12"
+            stroke="#222" stroke-width="2" fill="none" />
+        </svg>
+      </div>
+      <div class="kookpraat-desc">
+        Vertel hieronder hoe het bij jou ging. Was het een succes, een kleine keukenramp of iets daartussenin?<br>
+        Deel je tips, je tweaks en je ‘waarom doe ik dit mezelf aan’ momenten.<br>
+        En als je ergens op vastloopt, gooi je vraag erin. Ik ben er.
+      </div>
+      <WriteCommentBox :border-color="'1.5px dashed #B3C7E6'"/>
+      <CommentBox
+        type="success"
+        typeLabel=""
+        avatar="/Icons/user (3).png"
+        author="Loukie"
+        time=""
+        meta="Houdt van wandelen na het eten"
+        body="Cupcake ipsum dolor sit amet pie jelly-o candy. Tart I love I love marzipan pie pie chocolate bonbon donut.
+              Halvah marzipan gingerbread I love I love cotton candy biscuit. Cupcake oat cake gummi bears bonbon brownie
+              ice cream biscuit. Bear claw liquorice brownie caramels donut cake gummies gingerbread. Chupa chups pastry
+              bonbon donut gummi bears pastry chupa chups chocolate cake. I love dragée sesame snaps macaroon gummi bears
+              macaroon I love."
+        :color="'#666'"
+        @like="onLike"
+        @reply="onReply"
+        @report="onReport"
+      />
+    </div>
+    <!-- Kookpraat Section End -->
   </div>
 </template>
 
 <script setup>
 import { useRoute } from 'vue-router'
+import WriteCommentBox from '@/components/WriteCommentBox.vue'
+import CommentBox from '@/components/CommentBox.vue'
 const route = useRoute()
 const id = route.params.id
 
@@ -138,6 +175,19 @@ const mealImages = {
   // ...add more as needed
 }
 const mealImgSrc = mealImages[id]
+
+function onLike() {
+  // TODO: Implement like functionality
+  alert('Like clicked');
+}
+function onReply() {
+  // TODO: Implement reply functionality
+  alert('Reageer clicked');
+}
+function onReport() {
+  // TODO: Implement report functionality
+  alert('Melden clicked');
+}
 </script>
 
 <style scoped>
@@ -240,6 +290,7 @@ const mealImgSrc = mealImages[id]
     margin-right: 18px;
   }
 }
+
 @media (max-width: 900px) {
   .meal-fav-btn img {
     width: 36px;
@@ -255,7 +306,8 @@ const mealImgSrc = mealImages[id]
     margin-right: 10px;
   }
 }
-  @media (max-width: 599px) {
+
+@media (max-width: 599px) {
   .meal-fav-btn img {
     width: 28px;
     margin-top: 35px;
@@ -355,6 +407,14 @@ const mealImgSrc = mealImages[id]
   line-height: 1.6;
 }
 
+.kookpraat-comment {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 2.5rem 2.5rem 2.5rem;
+  box-sizing: border-box;
+  gap: 1.2rem;
+}
+
 @media (min-width: 900px) and (max-width: 991px) {
   .meal-sections {
     flex-direction: column;
@@ -380,6 +440,8 @@ const mealImgSrc = mealImages[id]
     min-width: 0;
     height: auto;
   }
+
+
 }
 
 @media (max-width: 899px) {
@@ -412,6 +474,11 @@ const mealImgSrc = mealImages[id]
   .meal-img {
     width: 95%;
   }
+
+  .kookpraat-comment {
+    margin: 0;
+    padding: 0;
+  }
 }
 
 @media (max-width: 600px) {
@@ -441,6 +508,223 @@ const mealImgSrc = mealImages[id]
 
   .meal-sections {
     gap: 0.7rem;
+  }
+}
+
+/* Kookpraat Section Styles */
+.kookpraat-section {
+  width: 100%;
+  margin-left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  margin-top: 3rem;
+  padding: 2.5rem 0 3rem 0;
+  border-radius: 0;
+  box-sizing: border-box;
+  border-top: 1px solid #eaeaea;
+}
+
+.kookpraat-title {
+  color: #b3c7e6;
+  font-size: 2rem;
+  font-family: inherit;
+  font-weight: 400;
+  margin-bottom: 0.2rem;
+}
+
+.kookpraat-squiggle {
+  margin-bottom: 1.2rem;
+}
+
+.kookpraat-desc {
+  color: #888;
+  font-size: 1.08rem;
+  margin-bottom: 2.2rem;
+  word-break: break-word;
+}
+.kookpraat-comment-header
+{
+  color: #7fa184;
+  font-size: 1.08rem;
+}
+.kookpraat-action
+{
+  color: #7fa184 !important;
+  font-size: 1.08rem;
+}
+
+.kookpraat-comment-body
+{
+  color: #888;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.6;
+}
+
+/* Responsive styles for kookpraat-desc */
+@media (max-width: 900px) {
+  .kookpraat-desc {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    max-width: 100%;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .kookpraat-desc {
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+    max-width: 100vw;
+    font-size: 0.97rem;
+    line-height: 1.5;
+  }
+}
+
+.kookpraat-form-row {
+  display: flex;
+  align-items: flex-start;
+  margin: 0 2.5rem 2.5rem 2.5rem;
+  width: calc(100% - 5rem);
+  box-sizing: border-box;
+  gap: 1.2rem;
+}
+
+.kookpraat-form {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: flex-start;
+  background: #fcfcfc;
+  border: 1px dashed #b3c7e6;
+  border-radius: 12px;
+  padding: 1.2rem 1.5rem;
+  gap: 1.2rem;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+}
+
+.kookpraat-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+  flex-shrink: 0;
+}
+
+/* Responsive styles for Kookpraat form row */
+@media (max-width: 900px) {
+  .kookpraat-form-row {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    width: calc(100% - 2rem);
+  }
+}
+
+@media (max-width: 600px) {
+  .kookpraat-form-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+    width: calc(100% - 0.4rem);
+  }
+
+  .kookpraat-avatar {
+    width: 38px;
+    height: 38px;
+    margin-bottom: 0.5rem;
+  }
+
+  .kookpraat-form {
+    padding: 1rem 0.5rem;
+  }
+}
+
+.kookpraat-action {
+  cursor: pointer;
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  color: #7fa184;
+  font-size: 0.9rem;
+  padding-right: 10px;
+  font-family: inherit;
+}
+
+.kookpraat-action:hover {
+  color: #b3b3b3;
+  text-decoration: underline;
+}
+
+.kookpraat-input-area {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.kookpraat-input {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  background: transparent;
+  font-size: 1.08rem;
+  color: #7fa184;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+  padding: 0.5rem 0.7rem;
+}
+
+.kookpraat-input-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  margin-top: 0;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.comment-btns {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.send-message {
+  display: flex;
+  align-items: center;
+}
+
+.send-message img {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.comment-btns img {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.send-message img:hover {
+  opacity: 0.7;
+}
+.comment-btns img:hover {
+  opacity: 0.7;
+}
+
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .kookpraat-input-actions {
+    gap: 0.3rem;
+  }
+  .comment-btns {
+    gap: 0.3rem;
   }
 }
 </style>

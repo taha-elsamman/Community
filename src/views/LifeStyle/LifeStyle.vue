@@ -1,19 +1,17 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-  <div class="Koelkastpraat">
-  <div class="weekmenu-container">
-    <div class="weekmenu-header">
-      <div class="weekmenu-title">Jouw weekmenu</div>
-      <div class="weekmenu-weekselect">
-        Kies jouw week <span class="weekmenu-weekselect-arrow">&#9660;</span>
-      </div>
+  <div class="lifestyleContainer">
+  <div class="lifestyle-container">
+    <div class="lifestyle-header">
+      <div class="lifestyle-title">Lifestyle tips</div>
+      <div class="lifestyle-paragraph">Verhalen, tips en eerlijke inzichten voor jouw reis</div>
     </div>
-    <div class="weekmenu-days" role="tablist">
+    <div class="lifestyle-days" role="tablist">
       <span
         v-for="(day, idx) in days"
         :key="day"
-        class="weekmenu-day"
-        :class="{ 'weekmenu-day-active': selectedDay === idx }"
+        class="lifestyle-day"
+        :class="{ 'lifestyle-day-active': selectedDay === idx }"
         @click="selectDay(idx)"
         role="tab"
         :aria-selected="selectedDay === idx"
@@ -26,11 +24,12 @@
           <path d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 T138 12 T158 12 T178 12 T198 12 T218 12 T238 12" stroke="#222" stroke-width="2" fill="none" />
         </svg>
       </div>
-    <div class="weekmenu-subtitle">Het menu voor vandaag</div>
-    <div class="weekmenu-list">
+
+    <div class="lifestyle-list">
       <template v-if="selectedDay === 0">
-        <MenuCard
+        <LifestyleTips
           id="1"
+          MainTitle="Lifestyle Tips"
           layout-src="/borders/Frame Recipe archives.png"
           img-src="/photos/oats.png"
           img-alt="Overnight oats met aardbeien"
@@ -41,7 +40,7 @@
           comment="1"
           img-position="left"
         />
-        <MenuCard
+        <LifestyleTips
           id="2"
           layout-src="/borders/Frame Recipe archives.png"
           img-src="/photos/apple.webp"
@@ -55,7 +54,7 @@
         />
       </template>
       <template v-else-if="selectedDay === 1">
-        <MenuCard
+        <LifestyleTips
           id="3"
           img-src="/photos/tosti.jpg"
           img-alt="Tosti"
@@ -66,7 +65,7 @@
           comment="1"
           img-position="left"
         />
-        <MenuCard
+        <LifestyleTips
           id="4"
           img-src="/photos/pasta.png"
           img-alt="Pasta"
@@ -79,7 +78,7 @@
         />
       </template>
       <template v-else-if="selectedDay === 2">
-        <MenuCard
+        <LifestyleTips
           id="5"
           img-src="/photos/yogurt.jpg"
           img-alt="Yoghurt met granola"
@@ -90,7 +89,7 @@
           comment="2"
           img-position="left"
         />
-        <MenuCard
+        <LifestyleTips
           id="6"
           img-src="/photos/banana.webp"
           img-alt="Banaan"
@@ -103,7 +102,7 @@
         />
       </template>
       <template v-else-if="selectedDay === 3">
-        <MenuCard
+        <LifestyleTips
           id="7"
           img-src="/photos/sandwich.webp"
           img-alt="Sandwich kipfilet"
@@ -114,7 +113,7 @@
           comment="1"
           img-position="left"
         />
-        <MenuCard
+        <LifestyleTips
           id="8"
           img-src="/photos/soup.png"
           img-alt="Tomatensoep"
@@ -127,7 +126,7 @@
         />
       </template>
       <template v-else-if="selectedDay === 4">
-        <MenuCard
+        <LifestyleTips
           id="9"
           img-src="/photos/pancakes.jpg"
           img-alt="Pannenkoeken"
@@ -138,7 +137,7 @@
           comment="2"
           img-position="left"
         />
-        <MenuCard
+        <LifestyleTips
           id="10"
           img-src="/photos/salad.jpg"
           img-alt="Salade"
@@ -151,7 +150,7 @@
         />
       </template>
       <template v-else-if="selectedDay === 5">
-        <MenuCard
+        <LifestyleTips
           id="11"
           img-src="/photos/eggs.jpg"
           img-alt="Roerei"
@@ -162,7 +161,7 @@
           comment="1"
           img-position="left"
         />
-        <MenuCard
+        <LifestyleTips
           id="12"
           img-src="/photos/pizza.jpg"
           img-alt="Pizza"
@@ -175,7 +174,7 @@
         />
       </template>
       <template v-else-if="selectedDay === 6">
-        <MenuCard
+        <LifestyleTips
           id="13"
           img-src="/photos/croissant.jpg"
           img-alt="Croissant"
@@ -186,7 +185,7 @@
           comment="1"
           img-position="left"
         />
-        <MenuCard
+        <LifestyleTips
           id="14"
           img-src="/photos/lasagna.jpg"
           img-alt="Lasagne"
@@ -199,7 +198,7 @@
         />
       </template>
       <template v-else>
-        <div class="weekmenu-empty">{{ days[selectedDay] }} | Geen menu voor deze dag.</div>
+        <div class="lifestyle-empty">{{ days[selectedDay] }} | Geen menu voor deze dag.</div>
       </template>
     </div>
   </div>
@@ -208,15 +207,14 @@
 
 <script setup>
 import { ref } from 'vue';
-import MenuCard from '@/components/WeeklyMenu/MenuCard.vue';
+import LifestyleTips from '@/components/LifestyleTips/LifestyleTips.vue';
 const days = [
-  'Maandag',
-  'Dinsdag',
-  'Woensdag',
-  'Donderdag',
-  'Vrijdag',
-  'Zaterdag',
-  'Zondag'
+  'Alles',
+  'Eten',
+  'Mindset',
+  'Bewegen',
+  'Praktisch',
+  'Evelinn Persoonlijk',
 ];
 const selectedDay = ref(0);
 function selectDay(idx) {
@@ -225,10 +223,10 @@ function selectDay(idx) {
 </script>
 
 <style scoped>
-.Koelkastpraat {
+.lifestyleContainer {
   padding: 5rem 2rem 2rem 2rem;
 }
-.weekmenu-container {
+.lifestyle-container {
   border-radius: 0.5rem;
   max-width: 1100px;
   margin: 0 auto 0 2rem;
@@ -241,22 +239,20 @@ function selectDay(idx) {
   align-items: start;
 }
 
-.weekmenu-header {
-  display: flex;
-  justify-content: space-around;
+.lifestyle-header {
   align-items: flex-start;
   margin-bottom: 1.5rem;
 }
 
-.weekmenu-title {
-  font-size: 2rem;
-  color: #9bb89c;
+.lifestyle-title {
+  font-size: 3rem;
+  color: #e06ca9;
   font-family: inherit;
   font-weight: 400;
   margin-bottom: 0.5rem;
 }
 
-.weekmenu-weekselect {
+.lifestyle-weekselect {
   font-size: 1rem;
   color: #888;
   font-family: inherit;
@@ -264,12 +260,12 @@ function selectDay(idx) {
   user-select: none;
 }
 
-.weekmenu-weekselect-arrow {
+.lifestyle-weekselect-arrow {
   font-size: 1.1em;
   margin-left: 0.2em;
 }
 
-.weekmenu-days {
+.lifestyle-days {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -283,7 +279,7 @@ function selectDay(idx) {
   scrollbar-color: #e06ca9 #f8f8f8;
 }
 
-.weekmenu-day {
+.lifestyle-day {
   color: #222;
   cursor: pointer;
   transition: color 0.2s, border-bottom 0.2s;
@@ -298,32 +294,39 @@ function selectDay(idx) {
   white-space: nowrap;
 }
 
-.weekmenu-day-active {
+.lifestyle-day-active {
   color: #e06ca9;
 }
 
-.weekmenu-squiggle {
+.lifestyle-squiggle {
   margin: 0.8rem 0 2.2rem 0;
   display: flex;
   justify-content: center;
 }
 
-.weekmenu-subtitle {
+.lifestyle-subtitle {
   font-size: 2rem;
-  color: #9fc6e7;
+  color: #e06ca9;
   font-family: inherit;
   font-weight: 400;
   margin-bottom: 2.5rem;
   text-align: center;
 }
-
-.weekmenu-list {
+.lifestyle-paragraph
+{
+  font-size: 1.2rem;
+  color: #888;
+  font-family: inherit;
+  margin-top: 0.2rem;
+  margin-bottom: 50px;
+}
+.lifestyle-list {
   display: flex;
   flex-direction: column;
   margin: 0 auto;
 }
 
-.weekmenu-empty {
+.lifestyle-empty {
   text-align: center;
   color: #aaa;
   font-size: 1.1rem;
@@ -332,7 +335,7 @@ function selectDay(idx) {
 
 /* Responsive styles */
 @media (max-width: 1100px) {
-  .weekmenu-container {
+  .lifestyle-container {
     max-width: 100vw;
     margin: 0;
     padding: 1.5rem 0.5rem 1rem 0.5rem;
@@ -340,49 +343,49 @@ function selectDay(idx) {
 }
 
 @media (max-width: 900px) {
-  .weekmenu-list {
+  .lifestyle-list {
     gap: 1.2rem;
   }
-  .weekmenu-container {
+  .lifestyle-container {
     padding: 1.5rem 0.5rem 1rem 0.5rem;
   }
 }
 
 @media (max-width: 600px) {
-  .weekmenu-title {
+  .lifestyle-title {
     font-size: 1.2rem;
   }
-  .weekmenu-subtitle {
+  .lifestyle-subtitle {
     font-size: 1.1rem;
   }
-  .weekmenu-list {
+  .lifestyle-list {
     gap: 0.7rem;
   }
-  .weekmenu-container {
+  .lifestyle-container {
     padding: 0.5rem 0.1rem 0.5rem 0.1rem;
     border-radius: 0.7rem;
   }
 }
 
 @media (max-width: 400px) {
-  .weekmenu-title {
+  .lifestyle-title {
     font-size: 1rem;
   }
-  .weekmenu-list {
+  .lifestyle-list {
     gap: 0.3rem;
     padding: 0;
   }
-  .weekmenu-container {
+  .lifestyle-container {
     padding: 0.2rem 0.05rem 0.2rem 0.05rem;
   }
 }
 
 /* Optional: Hide scrollbar for Webkit browsers */
-.weekmenu-days::-webkit-scrollbar {
+.lifestyle-days::-webkit-scrollbar {
   height: 4px;
   background: #f8f8f8;
 }
-.weekmenu-days::-webkit-scrollbar-thumb {
+.lifestyle-days::-webkit-scrollbar-thumb {
   background: #e06ca9;
   border-radius: 2px;
 }

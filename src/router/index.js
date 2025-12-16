@@ -64,6 +64,16 @@ const router = createRouter({
       name: 'meal-details',
       component: () => import('../views/MealDetails/MealDetails[id].vue'),
     },
+    {
+      path: '/bankhangen',
+      name: 'bankhangen',
+      component: () => import('../views/Bankhangen/Bankhangen.vue'),
+    },
+    {
+      path: '/life-style',
+      name: 'life-style',
+      component: () => import('../views/LifeStyle/LifeStyle.vue'),
+    },
   ],
 })
 

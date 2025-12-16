@@ -7,11 +7,12 @@
 			<li>
 				<router-link to="/meals" class="sidebar-link" @click="handleItemClick">Koelkastpraat</router-link>
 			</li>
-			<li><a href="#" @click="handleItemClick">Bankhangen</a></li>
+			<li>
+				<router-link to="/bankhangen" class="sidebar-link" @click="handleItemClick">Bankhangen</router-link></li>
 			<li><a href="#" @click="handleItemClick">De keukentafel</a></li>
 			<li><a href="#" @click="handleItemClick">De wasmand</a></li>
 			<li><a href="#" @click="handleItemClick">De boodschappenlijst</a></li>
-			<li><a href="#" @click="handleItemClick">Lifestyle tips</a></li>
+			<li><router-link to="/life-style" class="sidebar-link" @click="handleItemClick">Lifestyle tips</router-link></li>
 		</ul>
 	</aside>
 </template>
