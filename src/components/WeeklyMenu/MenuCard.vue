@@ -1,9 +1,18 @@
 <template>
   <div class="weekmenu-item">
-    <div class="weekmenu-img-stack" :class="{ 'reverse': imgPosition === 'right' }">
-      <img class="weekmenu-layout" :src="layoutSrc" :alt="imgAlt" />
-      <img class="weekmenu-img" :src="imgSrc" :alt="imgAlt" />
-    </div>
+    <router-link
+      :to="{
+        name: 'meal-details',
+        params: { id }
+      }"
+      class="weekmenu-img-link"
+      style="text-decoration: none;"
+    >
+      <div class="weekmenu-img-stack" :class="{ 'reverse': imgPosition === 'right' }">
+        <img class="weekmenu-layout" src="/borders/Frame Recipe archives.png" :alt="imgAlt" />
+        <img class="weekmenu-img" :src="imgSrc" :alt="imgAlt" />
+      </div>
+    </router-link>
     <div class="weekmenu-info" :class="{ 'info-right': imgPosition === 'right' }">
       <div class="weekmenu-item-title">{{ title }}</div>
       <div class="weekmenu-item-type">{{ type }}</div>
@@ -30,7 +39,7 @@
 
 <script setup>
 const props = defineProps({
-  layoutSrc: { type: String, required: true },
+  id: { type: [String, Number], required: true },
   imgSrc: { type: String, required: true },
   imgAlt: { type: String, default: '' },
   title: { type: String, required: true },
@@ -143,6 +152,10 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
   display: flex;
   align-items: center;
   gap: 0.3rem;
+}
+
+.weekmenu-img-link {
+  display: contents;
 }
 
 

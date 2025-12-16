@@ -5,7 +5,7 @@
 				<router-link to="/" class="sidebar-link" @click="handleItemClick">De voordeur</router-link>
 			</li>
 			<li>
-				<router-link to="/koelkastpraat" class="sidebar-link" @click="handleItemClick">Koelkastpraat</router-link>
+				<router-link to="/meals" class="sidebar-link" @click="handleItemClick">Koelkastpraat</router-link>
 			</li>
 			<li><a href="#" @click="handleItemClick">Bankhangen</a></li>
 			<li><a href="#" @click="handleItemClick">De keukentafel</a></li>

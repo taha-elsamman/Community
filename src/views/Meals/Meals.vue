@@ -35,6 +35,7 @@
     <div class="weekmenu-list">
       <template v-if="selectedDay === 0">
         <LeftCard
+          id="1"
           layout-src="/borders/Frame Recipe archives.png"
           img-src="/photos/oats.png"
           img-alt="Overnight oats met aardbeien"
@@ -46,8 +47,9 @@
           img-position="left"
         />
         <LeftCard
+          id="2"
           layout-src="/borders/Frame Recipe archives.png"
-          img-src="/photos/apple.png"
+          img-src="/photos/apple.webp"
           img-alt="Appel"
           title="Appel"
           type="Tussendoortje"
@@ -59,8 +61,8 @@
       </template>
       <template v-else-if="selectedDay === 1">
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
-          img-src="/photos/tosti.png"
+          id="3"
+          img-src="/photos/tosti.jpg"
           img-alt="Tosti"
           title="Tosti"
           type="Lunch"
@@ -70,7 +72,7 @@
           img-position="left"
         />
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
+          id="4"
           img-src="/photos/pasta.png"
           img-alt="Pasta"
           title="Pasta"
@@ -83,7 +85,7 @@
       </template>
       <template v-else-if="selectedDay === 2">
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
+          id="5"
           img-src="/photos/yogurt.jpg"
           img-alt="Yoghurt met granola"
           title="Yoghurt met granola"
@@ -94,7 +96,7 @@
           img-position="left"
         />
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
+          id="6"
           img-src="/photos/banana.webp"
           img-alt="Banaan"
           title="Banaan"
@@ -107,8 +109,8 @@
       </template>
       <template v-else-if="selectedDay === 3">
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
-          img-src="/photos/sandwich.jpeg"
+          id="7"
+          img-src="/photos/sandwich.webp"
           img-alt="Sandwich kipfilet"
           title="Sandwich kipfilet"
           type="Lunch"
@@ -118,8 +120,8 @@
           img-position="left"
         />
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
-          img-src="/photos/soup.jpg"
+          id="8"
+          img-src="/photos/soup.png"
           img-alt="Tomatensoep"
           title="Tomatensoep"
           type="Avondeten"
@@ -131,7 +133,7 @@
       </template>
       <template v-else-if="selectedDay === 4">
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
+          id="9"
           img-src="/photos/pancakes.jpg"
           img-alt="Pannenkoeken"
           title="Pannenkoeken"
@@ -142,7 +144,7 @@
           img-position="left"
         />
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
+          id="10"
           img-src="/photos/salad.jpg"
           img-alt="Salade"
           title="Salade"
@@ -155,7 +157,7 @@
       </template>
       <template v-else-if="selectedDay === 5">
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
+          id="11"
           img-src="/photos/eggs.jpg"
           img-alt="Roerei"
           title="Roerei"
@@ -166,7 +168,7 @@
           img-position="left"
         />
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
+          id="12"
           img-src="/photos/pizza.jpg"
           img-alt="Pizza"
           title="Pizza"
@@ -179,8 +181,8 @@
       </template>
       <template v-else-if="selectedDay === 6">
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
-          img-src="/photos/croissant.jpeg"
+          id="13"
+          img-src="/photos/croissant.jpg"
           img-alt="Croissant"
           title="Croissant"
           type="Ontbijt"
@@ -190,7 +192,7 @@
           img-position="left"
         />
         <LeftCard
-          layout-src="/borders/Frame Recipe archives.png"
+          id="14"
           img-src="/photos/lasagna.jpg"
           img-alt="Lasagne"
           title="Lasagne"

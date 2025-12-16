@@ -7,13 +7,8 @@
         Dit helpt alleen om een goed startpunt te berekenen.
       </div>
       <div class="macro-squiggle">
-        <svg width="120" height="24" viewBox="0 0 120 24" fill="none" style="display:inline-block;">
-          <path d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 " stroke="#222" stroke-width="2"
-            fill="none" />
-        </svg>
-        <svg width="120" height="24" viewBox="0 0 120 24" fill="none" style="display:inline-block; margin-left:-4px;">
-          <path d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12" stroke="#222" stroke-width="2"
-            fill="none" />
+        <svg width="240" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
+          <path d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 T138 12 T158 12 T178 12 T198 12 T218 12 T238 12" stroke="#222" stroke-width="2" fill="none" />
         </svg>
       </div>
       <div class="aboutyou-form">
@@ -89,6 +84,9 @@ function goToPrev() {
 </script>
 
 <style scoped>
+.aboutyou-container {
+  font-family: 'Indie Flower', cursive, sans-serif;
+}
 .aboutyou-container {
   min-height: 100vh;
   min-width: 100vw;
