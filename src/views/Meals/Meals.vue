@@ -31,7 +31,7 @@
       <template v-if="selectedDay === 0">
         <MenuCard
           id="1"
-          layout-src="/borders/Frame Recipe archives.png"
+          layout-src="/Icons/Wwebp/Recipes - Portion size.svg"
           img-src="/photos/oats.png"
           img-alt="Overnight oats met aardbeien"
           title="Overnight oats met aardbeien"

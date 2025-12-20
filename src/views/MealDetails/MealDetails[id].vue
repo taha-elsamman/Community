@@ -6,8 +6,9 @@
       <div class="meal-img-stack">
         <img class="meal-img" :src="mealImgSrc" alt="Overnight oats met aardbeien" />
         <img class="meal-img-frame" src="/borders/Frame Recipe details.webp" alt="" />
-        <button class="meal-fav-btn" aria-label="Add to favorites">
-          <img src="/Icons/heart.webp" width="50" alt="" class="fav-icon">
+        <button class="meal-fav-btn" aria-label="Add to favorites" @click="toggleFav">
+          <img v-show="!isFav" src="/Icons/Webp/heart.webp" width="50" alt="" class="fav-icon fav-icon-abs" />
+          <img v-show="isFav" src="/Icons/Webp/Heart Saved.webp" width="50" alt="" class="fav-icon fav-icon-abs" />
         </button>
       </div>
     </div>
@@ -127,24 +128,13 @@
         Deel je tips, je tweaks en je ‘waarom doe ik dit mezelf aan’ momenten.<br>
         En als je ergens op vastloopt, gooi je vraag erin. Ik ben er.
       </div>
-      <WriteCommentBox :border-color="'1.5px dashed #B3C7E6'"/>
-      <CommentBox
-        type="success"
-        typeLabel=""
-        avatar="/Icons/user (3).png"
-        author="Loukie"
-        time=""
-        meta="Houdt van wandelen na het eten"
-        body="Cupcake ipsum dolor sit amet pie jelly-o candy. Tart I love I love marzipan pie pie chocolate bonbon donut.
+      <WriteCommentBox :border-color="'1.5px dashed #B3C7E6'" />
+      <CommentBox type="success" typeLabel="" avatar="/Icons/user (3).png" author="Loukie" time=""
+        meta="Houdt van wandelen na het eten" body="Cupcake ipsum dolor sit amet pie jelly-o candy. Tart I love I love marzipan pie pie chocolate bonbon donut.
               Halvah marzipan gingerbread I love I love cotton candy biscuit. Cupcake oat cake gummi bears bonbon brownie
               ice cream biscuit. Bear claw liquorice brownie caramels donut cake gummies gingerbread. Chupa chups pastry
               bonbon donut gummi bears pastry chupa chups chocolate cake. I love dragée sesame snaps macaroon gummi bears
-              macaroon I love."
-        :color="'#666'"
-        @like="onLike"
-        @reply="onReply"
-        @report="onReport"
-      />
+              macaroon I love." :color="'#666'" @like="onLike" @reply="onReply" @report="onReport" />
     </div>
     <!-- Kookpraat Section End -->
   </div>
@@ -154,6 +144,7 @@
 import { useRoute } from 'vue-router'
 import WriteCommentBox from '@/components/WriteCommentBox.vue'
 import CommentBox from '@/components/CommentBox.vue'
+import { ref } from 'vue'
 const route = useRoute()
 const id = route.params.id
 
@@ -175,6 +166,11 @@ const mealImages = {
   // ...add more as needed
 }
 const mealImgSrc = mealImages[id]
+
+const isFav = ref(false)
+function toggleFav() {
+  isFav.value = !isFav.value
+}
 
 function onLike() {
   // TODO: Implement like functionality
@@ -236,84 +232,107 @@ function onReport() {
 .meal-img-stack {
   position: relative;
   display: flex;
-  width: 80%;
-  max-width: none;
   justify-content: center;
   align-items: center;
+  width: 540px;
+  height: 400px;
+  max-width: 100%;
   margin-bottom: 50px;
 }
 
 .meal-img {
-  position: absolute;
-  top: 40px;
-  display: block;
-  width: 90%;
-  height: auto;
+  width: 500px;
+  height: 360px;
   object-fit: cover;
   position: relative;
   z-index: 1;
+  background: #f8f8f8;
 }
 
 .meal-img-frame {
   position: absolute;
   top: 0;
   left: 0;
-  width: 115%;
-  height: 115%;
+  width: 540px;
+  height: 400px;
   z-index: 2;
   pointer-events: none;
 }
 
 .meal-fav-btn {
   position: absolute;
-  top: 12px;
+  top: 42px;
   right: 18px;
   background: none;
   border: none;
   cursor: pointer;
   z-index: 3;
   padding: 0;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fav-icon-abs {
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .meal-fav-btn img {
-  margin-top: 50px;
-  margin-right: 30px;
-  width: 50px;
-  height: auto;
+  width: 40px;
+  height: 40px;
+  margin: 0;
+  padding: 0;
+  display: block;
 }
 
-/* Responsive fav-icon size */
-@media (max-width: 1200px) {
-  .meal-fav-btn img {
-    width: 36px;
-    margin-top: 35px;
-    margin-right: 18px;
-  }
-}
-
+/* Responsive adjustments */
 @media (max-width: 900px) {
-  .meal-fav-btn img {
-    width: 36px;
-    margin-top: 50px;
-    margin-right: 18px;
+
+  .meal-img-stack {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+  }
+
+  .meal-img {
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+    background: #f8f8f8;
+  }
+
+  .meal-img-frame {
+    width: 120px;
+    height: 410px !important;
   }
 }
 
 @media (max-width: 600px) {
-  .meal-fav-btn img {
-    width: 28px;
-    margin-top: 15px;
-    margin-right: 10px;
-  }
-}
-
-@media (max-width: 599px) {
-  .meal-fav-btn img {
-    width: 28px;
-    margin-top: 35px;
-    margin-right: 10px;
+  .meal-img-stack {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
   }
 
+  .meal-img {
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+    background: #f8f8f8;
+  }
+
+  .meal-img-frame {
+    width: 120px;
+    height: 410px !important;
+  }
 }
 
 .meal-sections {
@@ -415,35 +434,6 @@ function onReport() {
   gap: 1.2rem;
 }
 
-@media (min-width: 900px) and (max-width: 991px) {
-  .meal-sections {
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .meal-preparation {
-    margin-left: 0;
-  }
-
-  .meal-img-stack {
-    position: relative;
-    display: flex;
-    width: 80%;
-    max-width: none;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 50px;
-  }
-
-  .meal-img-frame {
-    width: 100%;
-    min-width: 0;
-    height: auto;
-  }
-
-
-}
-
 @media (max-width: 899px) {
   .meal-sections {
     flex-direction: column;
@@ -542,19 +532,18 @@ function onReport() {
   margin-bottom: 2.2rem;
   word-break: break-word;
 }
-.kookpraat-comment-header
-{
+
+.kookpraat-comment-header {
   color: #7fa184;
   font-size: 1.08rem;
 }
-.kookpraat-action
-{
+
+.kookpraat-action {
   color: #7fa184 !important;
   font-size: 1.08rem;
 }
 
-.kookpraat-comment-body
-{
+.kookpraat-comment-body {
   color: #888;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
@@ -562,14 +551,7 @@ function onReport() {
 }
 
 /* Responsive styles for kookpraat-desc */
-@media (max-width: 900px) {
-  .kookpraat-desc {
-    margin-left: 1rem;
-    margin-right: 1rem;
-    max-width: 100%;
-    font-size: 1rem;
-  }
-}
+
 
 @media (max-width: 600px) {
   .kookpraat-desc {
@@ -706,13 +688,16 @@ function onReport() {
   cursor: pointer;
   transition: opacity 0.2s;
 }
+
 .comment-btns img {
   cursor: pointer;
   transition: opacity 0.2s;
 }
+
 .send-message img:hover {
   opacity: 0.7;
 }
+
 .comment-btns img:hover {
   opacity: 0.7;
 }
@@ -723,6 +708,7 @@ function onReport() {
   .kookpraat-input-actions {
     gap: 0.3rem;
   }
+
   .comment-btns {
     gap: 0.3rem;
   }

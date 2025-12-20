@@ -39,11 +39,11 @@ function goToPrev() {
 }
 
 const bodytypes = [
-  { value: 'ondergewicht', label: 'Ondergewicht', img: '/photos/bodytypes/ondergewicht.png' },
-  { value: 'normaal', label: 'Normaal', img: '/photos/bodytypes/normal.png' },
-  { value: 'overgewicht', label: 'Overgewicht', img: '/photos/bodytypes/overgewicht.png' },
-  { value: 'obesitas', label: 'Obesitas', img: '/photos/bodytypes/obesitas.png' },
-  { value: 'zwaar-obesitas', label: 'Zwaar obesitas', img: '/photos/bodytypes/zwaar-obesitas.png' }
+  { value: 'ondergewicht', label: 'Ondergewicht', img: '/photos/bodytypes/ondergewicht.webp' },
+  { value: 'normaal', label: 'Normaal', img: '/photos/bodytypes/normal.webp' },
+  { value: 'overgewicht', label: 'Overgewicht', img: '/photos/bodytypes/overgewicht.webp' },
+  { value: 'obesitas', label: 'Obesitas', img: '/photos/bodytypes/obesitas.webp' },
+  { value: 'zwaar-obesitas', label: 'Zwaar obesitas', img: '/photos/bodytypes/zwaar-obesitas.webp' }
 ];
 
 const selectedIndex = ref(null);
@@ -215,17 +215,17 @@ function selectType(idx) {
 
   .bodytype-item {
     width: 45vw;
-    max-width: 90px;
+    max-width: 110px;
     min-width: 60px;
     margin-bottom: 1rem;
   }
 
   .bodytype-img {
     width: 40vw;
-    max-width: 70px;
+    max-width: 110px;
     min-width: 40px;
     height: 60vw;
-    max-height: 90px;
+    max-height: 110px;
     min-height: 50px;
   }
 

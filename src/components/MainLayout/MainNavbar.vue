@@ -4,12 +4,12 @@
     <div class="container-fluid">
       <slot name="burger" :onBurgerClick="handleBurgerClick"></slot>
       <a class="navbar-brand" href="/">
-        <img src="/Projectlifetyle_Logo.png" alt="Logo" width="70" height="70" class="d-inline-block align-text-top" />
+        <img src="/Projectlifetyle_Logo.png" alt="Logo" width="70" height="70" class="d-inline-block align-text-top ms-5" />
       </a>
       <button class="navbar-toggler" type="button" @click="toggleNavbar" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" :class="{ show: navbarOpen }" id="navbarSupportedContent">
+      <div class="collapse navbar-collapse ms-md-5" :class="{ show: navbarOpen }" id="navbarSupportedContent">
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
         </form>

@@ -1,14 +1,9 @@
 <template>
-  <div class="lifestyle-subtitle">{{ MainTitle }}</div>
   <div class="weekmenu-item">
-    <router-link
-      :to="{
-        name: 'meal-details',
-        params: { id }
-      }"
-      class="weekmenu-img-link"
-      style="text-decoration: none;"
-    >
+    <router-link :to="{
+      name: 'meal-details',
+      params: { id }
+    }" class="weekmenu-img-link" style="text-decoration: none;">
       <div class="weekmenu-img-stack" :class="{ 'reverse': imgPosition === 'right' }">
         <img class="weekmenu-layout" src="/borders/Frame Recipe archives.png" :alt="imgAlt" />
         <img class="weekmenu-img" :src="imgSrc" :alt="imgAlt" />
@@ -17,44 +12,20 @@
     <div class="weekmenu-info" :class="{ 'info-right': imgPosition === 'right' }">
       <div class="weekmenu-item-title">{{ title }}</div>
       <div class="weekmenu-item-type">{{ type }}</div>
-      <div class="weekmenu-item-meta">
-        <span class="weekmenu-meta">
-          <i>
-            <img :src="iconTime" alt="clock icon" width="25" />
-          </i> {{ time }}
-        </span>
-        <span class="weekmenu-meta">
-          <i>
-            <img :src="iconUser" alt="user icon" width="25" />
-          </i> {{ user }}
-        </span>
-        <span class="weekmenu-meta">
-          <i>
-            <img :src="iconComment" alt="comment icon" width="25" />
-          </i> {{ comment }}
-        </span>
-      </div>
+      <div class="weekmenu-item-meta">lees Verder</div>
     </div>
   </div>
 </template>
 
 <script setup>
-const props = defineProps({
+defineProps({
   id: { type: [String, Number], required: true },
   imgSrc: { type: String, required: true },
   imgAlt: { type: String, default: '' },
-  MainTitle: { type: String, required: true },
   title: { type: String, required: true },
   type: { type: String, required: true },
-  time: { type: String, required: true },
-  user: { type: [String, Number], required: true },
-  comment: { type: [String, Number], required: true },
   imgPosition: { type: String, default: 'left' }
 });
-
-const iconTime = props.iconTime || '/Icons/time icon.png';
-const iconUser = props.iconUser || '/Icons/user icon.png';
-const iconComment = props.iconComment || '/Icons/comment icon.png';
 </script>
 
 <style scoped>
@@ -68,6 +39,7 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
   width: 100%;
   min-width: 0;
 }
+
 .lifestyle-subtitle {
   font-size: 2rem;
   color: #e06ca9;
@@ -76,6 +48,7 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
   margin-bottom: 2.5rem;
   text-align: center;
 }
+
 .weekmenu-img-stack {
   position: relative;
   width: 150px;
@@ -153,7 +126,7 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
   gap: 1.2rem;
   align-items: center;
   font-size: 1rem;
-  color: #9bb89c;
+  color: #e06ca9;
   flex-wrap: wrap;
 }
 
@@ -175,22 +148,26 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
     width: 100%;
     margin-bottom: 30px;
   }
+
   .weekmenu-img-stack {
     width: 100px;
     height: 100px;
     min-width: 100px;
     min-height: 100px;
   }
+
   .weekmenu-layout {
     width: 100px;
     height: 100px;
   }
+
   .weekmenu-img {
     width: 80px;
     height: 80px;
     top: 9px;
     left: 9px;
   }
+
   .weekmenu-info {
     max-width: 300px;
   }
@@ -199,7 +176,8 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
 
 @media (max-width: 600px) {
   .weekmenu-item {
-    flex-direction: row; /* Keep image and info side by side */
+    flex-direction: row;
+    /* Keep image and info side by side */
     align-items: center;
     justify-content: center;
     gap: 0.7rem;
@@ -207,9 +185,11 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
     margin-bottom: 30px;
     padding: 10px;
   }
-    .lifestyle-subtitle {
+
+  .lifestyle-subtitle {
     font-size: 1.1rem;
   }
+
   .weekmenu-img-stack {
     width: 100px;
     height: 100px;
@@ -217,16 +197,19 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
     min-height: 100px;
     margin: 0;
   }
+
   .weekmenu-layout {
     width: 100px;
     height: 100px;
   }
+
   .weekmenu-img {
     width: 85px;
     height: 80px;
     top: 9px;
     left: 9px;
   }
+
   .weekmenu-info,
   .weekmenu-info.info-right {
     max-width: 100vw;
@@ -236,12 +219,15 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
     order: unset;
     width: auto;
   }
+
   .weekmenu-item-title {
     font-size: 1rem;
   }
+
   .weekmenu-item-type {
     font-size: 0.9rem;
   }
+
   .weekmenu-item-meta {
     font-size: 0.9rem;
     gap: 0.7rem;

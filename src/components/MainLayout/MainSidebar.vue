@@ -39,7 +39,6 @@ function handleItemClick() {
 	left: 0;
 	width: 220px;
 	height: calc(100vh - 64px); /* Adjust if navbar height changes */
-	border-right: 1px solid #e0e0e0;
 	padding-top: 1rem;
 	display: flex;
 	flex-direction: column;
@@ -90,9 +89,6 @@ function handleItemClick() {
 	transition: background 0.2s;
 }
 
-.sidebar-nav a:hover {
-  background: #f0f0f0;
-}
 
 .sidebar-link {
 	text-decoration: none;
@@ -103,8 +99,9 @@ function handleItemClick() {
 	border-radius: 4px;
 	transition: background 0.2s;
 }
-.sidebar-link:hover {
-	background: #f0f0f0;
-}
 
+.sidebar-nav a.router-link-active,
+.sidebar-link.router-link-active {
+	color: #e06ca9;
+}
 </style>

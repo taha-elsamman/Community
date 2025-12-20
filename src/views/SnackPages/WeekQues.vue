@@ -58,23 +58,30 @@
         </div>
       </div>
 
-      <div class="weekques-section-row row">
-        <div class="weekques-col col-6 col-sm-12">
-          <div class="weekques-question weekques-question-pink">
-            Hoe vaak per week train je?
-          </div>
-          <div class="weekques-input-row">
-            <input class="weekques-input" type="number" min="0" />
-            <span class="weekques-input-label">keer</span>
-          </div>
+      <div class="weekques-section">
+        <div class="weekques-question weekques-question-pink">
+          Hoe vaak en hoe lang train je?
         </div>
-        <div class="weekques-col col-6 col-sm-12">
-          <div class="weekques-question weekques-question-pink">
-            Hoe lang duurt<br>een training gemiddeld?
+        <div class="weekques-options weekques-options-wide">
+          <div class="weekques-option">
+            <span>Hoe vaak per week?</span><br>
+            <div
+              class="weekques-input-row"
+              style="justify-content:center; border-bottom:2px dashed #e06ca9; border-radius:0 0 12px 12px; margin-top:0.5rem;"
+            >
+              <input class="weekques-input" type="number" min="0" style="width:60px; text-align:center;" />
+              <span class="weekques-input-label">keer</span>
+            </div>
           </div>
-          <div class="weekques-input-row">
-            <input class="weekques-input" type="number" min="0" />
-            <span class="weekques-input-label">minuten</span>
+          <div class="weekques-option">
+            <span>Hoe lang gemiddeld?</span><br>
+            <div
+              class="weekques-input-row"
+              style="justify-content:center; border-bottom:2px dashed #e06ca9; border-radius:0 0 12px 12px; margin-top:0.5rem;"
+            >
+              <input class="weekques-input" type="number" min="0" style="width:60px; text-align:center;" />
+              <span class="weekques-input-label">minuten</span>
+            </div>
           </div>
         </div>
       </div>

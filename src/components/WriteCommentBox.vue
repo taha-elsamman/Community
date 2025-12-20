@@ -1,10 +1,7 @@
 <template>
   <div class="flex align-items-center">
     <img class="bankhangen-avatar" src="/Icons/user (3).png" alt="avatar" />
-    <div
-      class="bankhangen-form bankhangen-form-row"
-      :style="{ border: borderColor}"
-    >
+    <div class="bankhangen-form bankhangen-form-row" :style="{ border: borderColor }">
       <textarea class="bankhangen-input" placeholder="Reageer op de vraag"></textarea>
       <div class="bankhangen-input-actions">
         <div class="bankhangen-comment-btns">
@@ -120,22 +117,27 @@ defineProps({
     width: calc(100% - 0.4rem);
     padding: 1rem 0.5rem;
   }
+
   .bankhangen-avatar {
     width: 60px;
     height: 60px;
     margin-bottom: 40px;
     margin-right: 20px;
   }
+
   .bankhangen-form {
     gap: 0.3rem;
   }
+
   .bankhangen-input {
     font-size: 1rem;
     padding: 0.4rem 0.5rem;
   }
+
   .bankhangen-input-actions {
     gap: 0.3rem;
   }
+
   .bankhangen-comment-btns {
     gap: 0.3rem;
   }

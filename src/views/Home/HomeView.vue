@@ -24,9 +24,11 @@
         <div class="profile-left">
           <div class="avatar-wrapper">
             <div class="avatar-circle">
-              <img src="/Icons/user (3).png" alt="Logo" width="120" height="120" class="d-inline-block align-text-top" />
+              <img src="/Icons/user (3).png" alt="Logo" width="120" height="120"
+                class="d-inline-block align-text-top" />
               <span class="avatar-camera">
-                <img src="/Icons/camera (1).png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top " />
+                <img src="/Icons/camera (1).png" alt="Logo" width="30" height="30"
+                  class="d-inline-block align-text-top " />
               </span>
             </div>
             <div class="avatar-name">Naam</div>
@@ -95,24 +97,28 @@
     <!-- Macro’s berekenen section (added below all existing content) -->
     <div class="macro-section">
       <div class="macro-card">
-      <div class="macro-title">Macro’s berekenen</div>
+        <div class="macro-title mb-5">Macro’s berekenen</div>
         <div class="macro-header">Even over jou</div>
         <div class="macro-desc">
           Geen zorgen, we slaan niks geks op.<br>
           Dit helpt alleen om een goed startpunt te berekenen.
         </div>
         <div class="macro-squiggle">
-        <svg width="240" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
-          <path d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 T138 12 T158 12 T178 12 T198 12 T218 12 T238 12" stroke="#222" stroke-width="2" fill="none" />
-        </svg>
+          <svg width="240" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
+            <path
+              d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 T138 12 T158 12 T178 12 T198 12 T218 12 T238 12"
+              stroke="#222" stroke-width="2" fill="none" />
+          </svg>
         </div>
         <div class="macro-form">
           <div class="macro-row">
             <div class="macro-col">
               <div class="macro-label macro-label-pink">Wat is jouw geslacht?</div>
               <div class="macro-gender-group">
-                <button class="macro-gender-btn">Vrouw</button>
-                <button class="macro-gender-btn">Man</button>
+                <button class="macro-gender-btn" :class="{ active: selectedGender === 'vrouw' }"
+                  @click="selectGender('vrouw')" type="button">Vrouw</button>
+                <button class="macro-gender-btn" :class="{ active: selectedGender === 'man' }"
+                  @click="selectGender('man')" type="button">Man</button>
               </div>
             </div>
             <div class="macro-col">
@@ -141,7 +147,7 @@
           </div>
           <div class="macro-footer">
             <button class="macro-nav macro-nav-prev">Vorige</button>
-            <button class="macro-nav macro-nav-next">Volgende</button>
+            <button class="macro-nav macro-nav-next" @click="goToSnackBodyTypes">Volgende</button>
           </div>
         </div>
       </div>
@@ -152,6 +158,16 @@
 
 <script setup>
 // ...existing code...
+import { ref } from 'vue'
+const selectedGender = ref(null)
+function selectGender(gender) {
+  selectedGender.value = gender
+}
+import { useRouter } from 'vue-router';
+const router = useRouter();
+function goToSnackBodyTypes() {
+  router.push('/snackpages/body-types');
+}
 </script>
 
 
@@ -197,13 +213,15 @@
 .profile-left {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Changed from center to flex-start */
+  align-items: flex-start;
+  /* Changed from center to flex-start */
 }
 
 .avatar-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Changed from center to flex-start */
+  align-items: flex-start;
+  /* Changed from center to flex-start */
 }
 
 .avatar-circle {
@@ -639,6 +657,7 @@
 }
 
 @media (max-width: 900px) {
+
   .welcome-container,
   .buurt-section,
   .macro-section {
@@ -646,12 +665,14 @@
     max-width: 100%;
     padding: 2rem 1rem 1.5rem 1rem;
   }
+
   .profile-form,
   .buurt-form-row,
   .macro-row {
     flex-direction: column;
     gap: 1.5rem;
   }
+
   .profile-left,
   .buurt-left,
   .macro-col {
@@ -659,15 +680,18 @@
     width: 100%;
     min-width: 0;
   }
+
   .profile-right,
   .buurt-right {
     width: 100%;
   }
+
   .avatar-circle,
   .buurt-avatar {
     margin: 0 auto;
   }
-    .yellow-text {
+
+  .yellow-text {
     font-size: 1.5rem;
   }
 }
@@ -676,6 +700,7 @@
   .homepage {
     padding-top: 1rem;
   }
+
   .welcome-container,
   .buurt-section,
   .macro-section {
@@ -683,20 +708,24 @@
     margin: 0 0.2rem;
     border-radius: 0.5rem;
   }
+
   .welcome-heading,
   .buurt-heading,
   .macro-title {
     font-size: 1.2rem;
   }
+
   .macro-header {
     font-size: 1.1rem;
   }
+
   .profile-form,
   .buurt-form-row,
   .macro-row {
     flex-direction: column;
     gap: 1rem;
   }
+
   .profile-left,
   .buurt-left,
   .macro-col {
@@ -704,10 +733,12 @@
     width: 100%;
     min-width: 0;
   }
+
   .profile-right,
   .buurt-right {
     width: 100%;
   }
+
   .avatar-circle,
   .buurt-avatar {
     margin: 0 auto;
@@ -716,27 +747,31 @@
   .macro-card {
     padding: 1.2rem 0.5rem 1rem 0.5rem;
   }
+
   .macro-squiggle svg {
     width: 80px !important;
     height: 16px !important;
   }
+
   .yellow-text {
     font-size: 1rem;
   }
-  .avatar-wrapper
-  {
+
+  .avatar-wrapper {
     width: 100%;
     margin-bottom: 20px;
   }
 }
 
 @media (max-width: 400px) {
+
   .welcome-container,
   .buurt-section,
   .macro-section {
     padding: 0.5rem 0.1rem 0.5rem 0.1rem;
     margin: 0;
   }
+
   .macro-title {
     font-size: 1rem;
   }
