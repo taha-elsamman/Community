@@ -79,6 +79,11 @@ const router = createRouter({
       name: 'life-style',
       component: () => import('../views/LifeStyle/LifeStyle.vue'),
     },
+    {
+      path: '/neighborhood',
+      name: 'neighborhood',
+      component: () => import('../views/Neighborhood/Neighborhood.vue'),
+    },
   ],
 })
 

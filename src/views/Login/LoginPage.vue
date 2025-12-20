@@ -3,19 +3,22 @@
     <div class="login-card">
       <h1 class="login-title">Login</h1>
       <div class="login-welcome">Hey jij,<br />welkom terug!</div>
-      <form class="login-form">
+      <form class="login-form" @submit.prevent="onSubmit">
         <div class="login-group">
           <label for="username" class="login-label">Gebruikersnaam</label>
-          <input id="username" type="text" class="login-input" />
+          <input id="username" type="text" class="login-input" v-model="username" autocomplete="username" />
         </div>
         <div class="login-group">
           <label for="password" class="login-label">Wachtwoord</label>
-          <input id="password" type="password" class="login-input" />
+          <input id="password" type="password" class="login-input" v-model="password" autocomplete="current-password" />
         </div>
         <div class="login-forgot-row">
           <span class="login-forgot-label">Wachtwoord vergeten?</span>
         </div>
-        <button type="submit" class="login-btn-handwritten">Inloggen</button>
+        <button type="submit" class="login-btn-handwritten" :disabled="loading">
+          {{ loading ? 'Even geduld...' : 'Inloggen' }}
+        </button>
+        <div v-if="error" class="login-error">{{ errorMsg }}</div>
       </form>
       <div class="login-footer">Nog geen account?
         <span
@@ -29,7 +32,32 @@
 </template>
 
 <script setup>
-// No logic for now
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+
+const username = ref('')
+const password = ref('')
+const loading = ref(false)
+const error = ref(false)
+const errorMsg = ref('')
+const auth = useAuthStore()
+const router = useRouter()
+
+async function onSubmit() {
+  loading.value = true
+  error.value = false
+  errorMsg.value = ''
+  try {
+    await auth.login({ username: username.value, password: password.value })
+    router.push('/')
+  } catch  {
+    error.value = true
+    errorMsg.value = 'Ongeldige gebruikersnaam of wachtwoord.'
+  } finally {
+    loading.value = false
+  }
+}
 </script>
 
 <style scoped>
@@ -160,6 +188,14 @@
   color: #da2c89;
   text-decoration:underline;
 }
+
+.login-error {
+  color: #e06ca9;
+  text-align: center;
+  margin-top: 0.7rem;
+  font-size: 1.05rem;
+}
+
 @media (max-width: 600px) {
   .login-card {
     max-width: 98vw;
