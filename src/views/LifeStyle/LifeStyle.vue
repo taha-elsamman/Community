@@ -38,11 +38,13 @@
 
       <div class="lifestyle-list">
         <template v-if="lifestyle === 0">
-          <LifestyleTips v-for="item in paginatedTips" :key="item.id" v-bind="item" />
+          <LifestyleTips v-for="item in paginatedTips" :key="item.id" v-bind="item" @click="goToDetail(item.id)"
+            class="lifestyle-tip-clickable" />
         </template>
         <template v-else>
-          <LifestyleTips v-for="item in paginatedTips" :key="item.id" v-bind="item" />
-          <div v-if="filteredTips.length === 0" class="lifestyle-empty">
+          <LifestyleTips v-for="item in paginatedTips" :key="item.id" v-bind="item" @click="goToDetail(item.id)"
+            class="lifestyle-tip-clickable" />
+          <div v-if="paginatedTips.length === 0" class="lifestyle-empty">
             {{ days[lifestyle] }} | Geen menu voor deze dag.
           </div>
         </template>
@@ -64,127 +66,100 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import LifestyleTips from '@/components/LifestyleTips/LifestyleTips.vue';
-const days = [
-  'Alles',
-  'Eten',
-  'Mindset',
-  'Bewegen',
-  'Praktisch',
-  'Evelinn Persoonlijk',
-];
-const lifestyle = ref(0);
-const currentPage = ref(1);
-const itemsPerPage = 3;
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import LifestyleTips from '@/components/LifestyleTips/LifestyleTips.vue'
+import { useContentStore } from '@/stores/content-store'
 
-const lifestyleTips = [
-  {
-    id: 1,
-    imgSrc: "/photos/oats.png",
-    imgAlt: "Overnight oats met aardbeien",
-    title: "Lifestyle tip 1",
-    type: "Eten",
-    imgPosition: "left",
-  },
-  {
-    id: 2,
-    imgSrc: "/photos/apple.webp",
-    imgAlt: "Appel",
-    title: "Lifestyle tip 2",
-    type: "Eten",
-    imgPosition: "right",
-  },
-  {
-    id: 3,
-    imgSrc: "/photos/tosti.jpg",
-    imgAlt: "Tosti",
-    title: "Lifestyle tip 3",
-    type: "Mindset",
-    imgPosition: "left",
-  },
-  {
-    id: 4,
-    imgSrc: "/photos/pasta.png",
-    imgAlt: "Pasta",
-    title: "Lifestyle tip 4",
-    type: "Mindset",
-    imgPosition: "right",
-  },
-  {
-    id: 5,
-    imgSrc: "/photos/yogurt.jpg",
-    imgAlt: "Yoghurt met granola",
-    title: "Lifestyle tip 5",
-    type: "Bewegen",
-    imgPosition: "left",
-  },
-  {
-    id: 6,
-    imgSrc: "/photos/banana.webp",
-    imgAlt: "Banaan",
-    title: "Lifestyle tip 6",
-    type: "Bewegen",
-    imgPosition: "right",
-  },
-  {
-    id: 7,
-    imgSrc: "/photos/sandwich.webp",
-    imgAlt: "Sandwich kipfilet",
-    title: "Lifestyle tip 7",
-    type: "Praktisch",
-    imgPosition: "left",
-  },
-  {
-    id: 8,
-    imgSrc: "/photos/soup.png",
-    imgAlt: "Tomatensoep",
-    title: "Lifestyle tip 8",
-    type: "Praktisch",
-    imgPosition: "right",
-  },
-  {
-    id: 9,
-    imgSrc: "/photos/pancakes.jpg",
-    imgAlt: "Pannenkoeken",
-    title: "Lifestyle tip 9",
-    type: "Evelinn Persoonlijk",
-    imgPosition: "left",
-  },
-  {
-    id: 10,
-    imgSrc: "/photos/salad.jpg",
-    imgAlt: "Salade",
-    title: "Lifestyle tip 10",
-    type: "Evelinn Persoonlijk",
-    imgPosition: "right",
+const contentStore = useContentStore()
+const categories = ref([])
+const days = computed(() => ['Alles', ...categories.value.map(c => c.name)])
+
+const lifestyle = ref(0)
+const currentPage = ref(1)
+const itemsPerPage = 4
+
+const blogs = ref([])
+const blogsCount = ref(0)
+const loadingBlogs = ref(false)
+const blogsError = ref(null)
+
+async function fetchCategories() {
+  try {
+    const data = await contentStore.api_content_blog_categories_list()
+    categories.value = Array.isArray(data) ? data : []
+  } catch {
+    categories.value = []
   }
-];
-
-function selectDay(idx) {
-  lifestyle.value = idx;
-  currentPage.value = 1; // Reset to first page on tab change
 }
 
-const filteredTips = computed(() => {
-  if (lifestyle.value === 0) return lifestyleTips;
-  const type = days[lifestyle.value];
-  return lifestyleTips.filter(item => item.type === type);
-});
+async function fetchBlogs(page , category = null) {
+  loadingBlogs.value = true
+  blogsError.value = null
+  try {
+    const data = await contentStore.api_content_blogs_list(page, category, itemsPerPage)
+    blogs.value = (data && data.results) ? data.results : (data || [])
+    blogsCount.value = data && typeof data.count === 'number' ? data.count : (Array.isArray(data) ? data.length : 0)
+  } catch (e) {
+    blogsError.value = e
+    blogs.value = []
+    blogsCount.value = 0
+  } finally {
+    loadingBlogs.value = false
+  }
+}
 
-const totalPages = computed(() => {
-  return Math.max(1, Math.ceil(filteredTips.value.length / itemsPerPage));
-});
+onMounted(async () => {
+  await fetchCategories()
+  fetchBlogs(currentPage.value)
+})
 
-const paginatedTips = computed(() => {
-  const start = (currentPage.value - 1) * itemsPerPage;
-  return filteredTips.value.slice(start, start + itemsPerPage);
-});
+function selectDay(idx) {
+  lifestyle.value = idx
+  currentPage.value = 1 // Reset to first page on tab change
+  // If "Alles" tab, category is null; otherwise, use the category id
+  const category = idx === 0 ? null : categories.value[idx - 1]?.id
+  fetchBlogs(currentPage.value, category)
+}
 
 function goToPage(page) {
   if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page;
+    currentPage.value = page
+    // If "Alles" tab, category is null; otherwise, use the category id
+    const category = lifestyle.value === 0 ? null : categories.value[lifestyle.value - 1]?.id
+    fetchBlogs(currentPage.value, category)
   }
+}
+
+// map API items to the props expected by LifestyleTips
+const mappedItems = computed(() => {
+  return blogs.value.map((b, i) => ({
+    id: b.id,
+    imgSrc: b.image
+      ? (b.image.startsWith('http')
+          ? b.image
+          : `https://community.projectlifestyle.nl${b.image}`)
+      : (b.image_url || ''),
+    imgAlt: b.title || '',
+    title: b.title || '',
+    type: b.category?.name || '',
+    imgPosition: i % 2 === 0 ? 'left' : 'right',
+  }))
+})
+
+// When using backend pagination, just use the mappedItems directly for the current page
+const totalPages = computed(() => {
+  if (blogsCount.value && itemsPerPage) {
+    return Math.max(1, Math.ceil(blogsCount.value / itemsPerPage))
+  }
+  return 1
+})
+const paginatedTips = computed(() => mappedItems.value)
+
+const router = useRouter()
+
+function goToDetail(id) {
+  router.push(`/lifestyle/${id}`)
 }
 </script>
 
@@ -311,63 +286,10 @@ function goToPage(page) {
   font-size: 0.8rem;
 }
 
-.pagination-arrow {
-  background: none;
-  border: none;
-  color: #888;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0 0.3rem;
-  transition: color 0.2s;
-  outline: none;
-}
 
-.pagination-arrow:disabled {
-  color: #ccc;
-  cursor: default;
-}
 
-.pagination-page {
-  background: none;
-  border: none;
-  color: #888;
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0 0.3rem;
-  transition: color 0.2s;
-  outline: none;
-  position: relative;
-}
 
-.pagination-page.active {
-  color: #e06ca9;
-  font-weight: bold;
-  font-size: 1rem;
-}
 
-.pagination-page:not(.active):hover {
-  color: #e06ca9;
-}
-
-.pagination-arrow-img {
-  width: 20px;
-  height: 20px;
-  vertical-align: middle;
-  filter: grayscale(0.5);
-  transition: filter 0.2s;
-}
-
-.pagination-arrow-img.left {
-  transform: rotate(180deg);
-}
-
-.pagination-arrow:disabled .pagination-arrow-img {
-  filter: grayscale(1) opacity(0.4);
-}
-
-.pagination-arrow-img.right {
-  /* No rotation needed */
-}
 
 .lifestyle-tab-title {
   font-size: 1.35rem;
@@ -377,6 +299,12 @@ function goToPage(page) {
   margin-bottom: 1.5rem;
   text-align: center;
 }
+
+.lifestyle-tip-clickable {
+  cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+
 
 @media (max-width: 1100px) {
   .lifestyle-container {

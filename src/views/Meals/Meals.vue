@@ -1,214 +1,105 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <div class="Koelkastpraat">
-  <div class="weekmenu-container">
-    <div class="weekmenu-header">
-      <div class="weekmenu-title">Jouw weekmenu</div>
-      <div class="weekmenu-weekselect">
-        Kies jouw week <span class="weekmenu-weekselect-arrow">&#9660;</span>
+    <div class="weekmenu-container">
+      <div class="weekmenu-header">
+        <div class="weekmenu-title">Jouw weekmenu</div>
+        <div class="weekmenu-weekselect">
+          <select v-model="selectedWeek" class="weekmenu-weekselect-dropdown">
+            <option value="" disabled selected>Kies jouw week</option>
+            <option value="current">Current week</option>
+            <option value="next">Next week</option>
+          </select>
+          <span class="weekmenu-weekselect-arrow">&#9660;</span>
+        </div>
       </div>
-    </div>
-    <div class="weekmenu-days" role="tablist">
-      <span
-        v-for="(day, idx) in days"
-        :key="day"
-        class="weekmenu-day"
-        :class="{ 'weekmenu-day-active': selectedDay === idx }"
-        @click="selectDay(idx)"
-        role="tab"
-        :aria-selected="selectedDay === idx"
-        tabindex="0"
-        @keydown.enter="selectDay(idx)"
-      >{{ day }}</span>
-    </div>
+      <div class="weekmenu-days" role="tablist">
+        <span
+          v-for="(day, idx) in days"
+          :key="day"
+          class="weekmenu-day"
+          :class="{ 'weekmenu-day-active': selectedDay === idx }"
+          @click="selectDay(idx)"
+          role="tab"
+          :aria-selected="selectedDay === idx"
+          tabindex="0"
+          @keydown.enter="selectDay(idx)"
+        >{{ day }}</span>
+      </div>
       <div class="macro-squiggle">
         <svg width="240" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
           <path d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 T138 12 T158 12 T178 12 T198 12 T218 12 T238 12" stroke="#222" stroke-width="2" fill="none" />
         </svg>
       </div>
-    <div class="weekmenu-subtitle">Het menu voor vandaag</div>
-    <div class="weekmenu-list">
-      <template v-if="selectedDay === 0">
-        <MenuCard
-          id="1"
-          layout-src="/Icons/Wwebp/Recipes - Portion size.svg"
-          img-src="/photos/oats.png"
-          img-alt="Overnight oats met aardbeien"
-          title="Overnight oats met aardbeien"
-          type="Ontbijt"
-          time="20 min"
-          user="1"
-          comment="1"
-          img-position="left"
-        />
-        <MenuCard
-          id="2"
-          layout-src="/borders/Frame Recipe archives.png"
-          img-src="/photos/apple.webp"
-          img-alt="Appel"
-          title="Appel"
-          type="Tussendoortje"
-          time="1 min"
-          user="1"
-          comment="1"
-          img-position="right"
-        />
-      </template>
-      <template v-else-if="selectedDay === 1">
-        <MenuCard
-          id="3"
-          img-src="/photos/tosti.jpg"
-          img-alt="Tosti"
-          title="Tosti"
-          type="Lunch"
-          time="1 min"
-          user="1"
-          comment="1"
-          img-position="left"
-        />
-        <MenuCard
-          id="4"
-          img-src="/photos/pasta.png"
-          img-alt="Pasta"
-          title="Pasta"
-          type="Avondeten"
-          time="1 min"
-          user="1"
-          comment="1"
-          img-position="right"
-        />
-      </template>
-      <template v-else-if="selectedDay === 2">
-        <MenuCard
-          id="5"
-          img-src="/photos/yogurt.jpg"
-          img-alt="Yoghurt met granola"
-          title="Yoghurt met granola"
-          type="Ontbijt"
-          time="10 min"
-          user="2"
-          comment="2"
-          img-position="left"
-        />
-        <MenuCard
-          id="6"
-          img-src="/photos/banana.webp"
-          img-alt="Banaan"
-          title="Banaan"
-          type="Tussendoortje"
-          time="1 min"
-          user="2"
-          comment="2"
-          img-position="right"
-        />
-      </template>
-      <template v-else-if="selectedDay === 3">
-        <MenuCard
-          id="7"
-          img-src="/photos/sandwich.webp"
-          img-alt="Sandwich kipfilet"
-          title="Sandwich kipfilet"
-          type="Lunch"
-          time="15 min"
-          user="3"
-          comment="1"
-          img-position="left"
-        />
-        <MenuCard
-          id="8"
-          img-src="/photos/soup.png"
-          img-alt="Tomatensoep"
-          title="Tomatensoep"
-          type="Avondeten"
-          time="30 min"
-          user="3"
-          comment="1"
-          img-position="right"
-        />
-      </template>
-      <template v-else-if="selectedDay === 4">
-        <MenuCard
-          id="9"
-          img-src="/photos/pancakes.jpg"
-          img-alt="Pannenkoeken"
-          title="Pannenkoeken"
-          type="Ontbijt"
-          time="20 min"
-          user="4"
-          comment="2"
-          img-position="left"
-        />
-        <MenuCard
-          id="10"
-          img-src="/photos/salad.jpg"
-          img-alt="Salade"
-          title="Salade"
-          type="Lunch"
-          time="10 min"
-          user="4"
-          comment="2"
-          img-position="right"
-        />
-      </template>
-      <template v-else-if="selectedDay === 5">
-        <MenuCard
-          id="11"
-          img-src="/photos/eggs.jpg"
-          img-alt="Roerei"
-          title="Roerei"
-          type="Ontbijt"
-          time="8 min"
-          user="5"
-          comment="1"
-          img-position="left"
-        />
-        <MenuCard
-          id="12"
-          img-src="/photos/pizza.jpg"
-          img-alt="Pizza"
-          title="Pizza"
-          type="Avondeten"
-          time="20 min"
-          user="5"
-          comment="1"
-          img-position="right"
-        />
-      </template>
-      <template v-else-if="selectedDay === 6">
-        <MenuCard
-          id="13"
-          img-src="/photos/croissant.jpg"
-          img-alt="Croissant"
-          title="Croissant"
-          type="Ontbijt"
-          time="5 min"
-          user="6"
-          comment="1"
-          img-position="left"
-        />
-        <MenuCard
-          id="14"
-          img-src="/photos/lasagna.jpg"
-          img-alt="Lasagne"
-          title="Lasagne"
-          type="Avondeten"
-          time="40 min"
-          user="6"
-          comment="2"
-          img-position="right"
-        />
-      </template>
-      <template v-else>
-        <div class="weekmenu-empty">{{ days[selectedDay] }} | Geen menu voor deze dag.</div>
-      </template>
+      <div class="weekmenu-subtitle">Het menu voor vandaag</div>
+      <div class="weekmenu-list">
+        <template v-if="dayData">
+          <MenuCard
+            v-if="dayData.breakfast_recipe"
+            :id="dayData.breakfast_recipe.id"
+            :img-src="dayData.breakfast_recipe.image || '/photos/default.jpg'"
+            :img-alt="dayData.breakfast_recipe.name"
+            :title="dayData.breakfast_recipe.name"
+            type="Ontbijt"
+            :time="dayData.breakfast_recipe.preparation_time + ' min'"
+            user="1"
+            comment="1"
+            img-position="left"
+          />
+          <MenuCard
+            v-if="dayData.lunch_recipe"
+            :id="dayData.lunch_recipe.id"
+            :img-src="dayData.lunch_recipe.image || '/photos/default.jpg'"
+            :img-alt="dayData.lunch_recipe.name"
+            :title="dayData.lunch_recipe.name"
+            type="Lunch"
+            :time="dayData.lunch_recipe.preparation_time + ' min'"
+            user="1"
+            comment="1"
+            img-position="right"
+          />
+          <MenuCard
+            v-if="dayData.midday_recipe"
+            :id="dayData.midday_recipe.id"
+            :img-src="dayData.midday_recipe.image || '/photos/default.jpg'"
+            :img-alt="dayData.midday_recipe.name"
+            :title="dayData.midday_recipe.name"
+            type="Tussendoortje"
+            :time="dayData.midday_recipe.preparation_time + ' min'"
+            user="1"
+            comment="1"
+            img-position="left"
+          />
+          <MenuCard
+            v-if="dayData.dinner_recipe"
+            :id="dayData.dinner_recipe.id"
+            :img-src="dayData.dinner_recipe.image || '/photos/default.jpg'"
+            :img-alt="dayData.dinner_recipe.name"
+            :title="dayData.dinner_recipe.name"
+            type="Avondeten"
+            :time="dayData.dinner_recipe.preparation_time + ' min'"
+            user="1"
+            comment="1"
+            img-position="right"
+          />
+        </template>
+        <template v-else>
+          <div class="weekmenu-empty">{{ days[selectedDay] }} | Geen menu voor deze dag.</div>
+        </template>
+      </div>
     </div>
-  </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import MenuCard from '@/components/WeeklyMenu/MenuCard.vue';
+import { useContentStore } from '@/stores/content-store'
+
+const contentStore = useContentStore()
+const menu = ref([])
+const selectedDay = ref(0)
+const selectedWeek = ref('')
 const days = [
   'Maandag',
   'Dinsdag',
@@ -217,11 +108,57 @@ const days = [
   'Vrijdag',
   'Zaterdag',
   'Zondag'
-];
-const selectedDay = ref(0);
+]
+
+// Helper to get Monday date for a given week offset (0 = current, 1 = next)
+function getMondayOfWeek(offset = 0) {
+  const now = new Date();
+  // Get current day (0=Sun, 1=Mon, ..., 6=Sat)
+  const day = now.getDay();
+  // Calculate how many days to subtract to get to Monday
+  const diff = now.getDate() - day + (day === 0 ? -6 : 1) + offset * 7;
+  const monday = new Date(now.setDate(diff));
+  // Format as YYYY-MM-DD
+  const yyyy = monday.getFullYear();
+  const mm = String(monday.getMonth() + 1).padStart(2, '0');
+  const dd = String(monday.getDate()).padStart(2, '0');
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+onMounted(async () => {
+  // On mount, fetch current week (Monday)
+  const monday = getMondayOfWeek(0);
+  const result = await contentStore.api_content_menu_list(monday);
+  menu.value = Array.isArray(result) ? result : [];
+})
+
+// Watch for week selection changes
+watch(selectedWeek, async (val) => {
+  let monday = '';
+  if (val === 'current') {
+    monday = getMondayOfWeek(0);
+    const result = await contentStore.api_content_menu_list(monday);
+    menu.value = Array.isArray(result) ? result : [];
+  } else if (val === 'next') {
+    monday = getMondayOfWeek(1);
+    const result = await contentStore.api_content_menu_list(monday);
+    menu.value = Array.isArray(result) ? result : [];
+  }
+  selectedDay.value = 0;
+})
+
 function selectDay(idx) {
   selectedDay.value = idx;
 }
+
+// Get the recipes for the selected day from the API data
+const dayData = computed(() => {
+  if (!menu.value.length) return null
+  // Assume first menu (active week)
+  const week = menu.value[0]
+  if (!week || !week.days) return null
+  return week.days[selectedDay.value] || null
+})
 </script>
 
 <style scoped>
@@ -243,14 +180,14 @@ function selectDay(idx) {
 
 .weekmenu-header {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 1.5rem;
 }
 
 .weekmenu-title {
   font-size: 2rem;
-  color: #9bb89c;
+  color: #9FCDEE;
   font-family: inherit;
   font-weight: 400;
   margin-bottom: 0.5rem;
@@ -262,11 +199,30 @@ function selectDay(idx) {
   font-family: inherit;
   cursor: pointer;
   user-select: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.weekmenu-weekselect-dropdown {
+  font-size: 1rem;
+  color: #888;
+  font-family: inherit;
+  border-radius: 0.3rem;
+  padding: 0.2rem 1.5rem 0.2rem 0.7rem;
+  background: #fff;
+  appearance: none;
+  outline: none;
+  cursor: pointer;
+  margin-right: -1.2em;
 }
 
 .weekmenu-weekselect-arrow {
   font-size: 1.1em;
-  margin-left: 0.2em;
+  margin-left: 0.4em;
+  pointer-events: none;
+  position: relative;
+  z-index: 1;
 }
 
 .weekmenu-days {

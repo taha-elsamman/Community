@@ -1,4 +1,3 @@
-
 <template>
   <nav class="navbar navbar-expand-lg fixed-top bg-white">
     <div class="container-fluid">
@@ -38,6 +37,11 @@
               <img src="/Icons/user (3).png" alt="" width="30" height="30" />
             </a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" @click.prevent="handleLogout">
+              logout
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -46,6 +50,8 @@
 
 <script setup>
 import { ref, defineEmits, defineProps } from 'vue';
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const emits = defineEmits(['toggleSidebar', 'closeSidebar', 'closeNavbar', 'openSidebar', 'openNavbar']);
 const props = defineProps({
@@ -53,6 +59,8 @@ const props = defineProps({
 });
 
 const navbarOpen = ref(false);
+const router = useRouter()
+const auth = useAuthStore()
 
 function toggleNavbar() {
   if (props.sidebarOpen) {
@@ -79,6 +87,11 @@ function handleBurgerClick() {
   } else {
     emits('toggleSidebar');
   }
+}
+
+async function handleLogout() {
+  await auth.logout()
+  router.push('/login')
 }
 </script>
 

@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import { api } from '@/boot/axios'
 
 export const useAuthStore = defineStore('auth', {
+  getters
+: {
+    isAuthenticated: (state) => !!state.token,
+  },
   state: () => ({
     user: null,
     token: localStorage.getItem('token') || null,
@@ -13,10 +17,13 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.post('/auth/token/login/', data)
+        const res = await api.post('/auth/token/login/', data)
         this.token = res.data.auth_token
         localStorage.setItem('token', this.token)
         await this.fetchMe()
+        if (this.user && this.user.id) {
+          localStorage.setItem('user', JSON.stringify({ id: this.user.id }))
+        }
       } catch (e) {
         this.error = e
       } finally {
@@ -27,7 +34,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.post('/auth/token/logout/', {}, {
+        await api.post('/auth/token/logout/', {}, {
           headers: { Authorization: `Token ${this.token}` }
         })
       } catch {
@@ -36,13 +43,14 @@ export const useAuthStore = defineStore('auth', {
       this.token = null
       this.user = null
       localStorage.removeItem('token')
+      localStorage.removeItem('user')
       this.loading = false
     },
     async fetchUsers() {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.get('/auth/users/', {
+        const res = await api.get('/auth/users/', {
           headers: { Authorization: `Token ${this.token}` }
         })
         return res.data
@@ -57,7 +65,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.post('/auth/users/', data)
+        const res = await api.post('/auth/users/', data)
         return res.data
       } catch (e) {
         this.error = e
@@ -70,7 +78,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.get(`/auth/users/${id}/`, {
+        const res = await api.get(`/auth/users/${id}/`, {
           headers: { Authorization: `Token ${this.token}` }
         })
         return res.data
@@ -85,7 +93,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.put(`/auth/users/${id}/`, data, {
+        const res = await api.put(`/auth/users/${id}/`, data, {
           headers: { Authorization: `Token ${this.token}` }
         })
         return res.data
@@ -100,7 +108,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.patch(`/auth/users/${id}/`, data, {
+        const res = await api.patch(`/auth/users/${id}/`, data, {
           headers: { Authorization: `Token ${this.token}` }
         })
         return res.data
@@ -115,7 +123,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.delete(`/auth/users/${id}/`, {
+        await api.delete(`/auth/users/${id}/`, {
           headers: { Authorization: `Token ${this.token}` }
         })
       } catch (e) {
@@ -129,7 +137,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.post('/auth/users/activation/', data)
+        await api.post('/auth/users/activation/', data)
       } catch (e) {
         this.error = e
         throw e
@@ -141,7 +149,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.get('/auth/users/me/', {
+        const res = await api.get('/auth/users/me/', {
           headers: { Authorization: `Token ${this.token}` }
         })
         this.user = res.data
@@ -158,7 +166,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.put('/auth/users/me/', data, {
+        const res = await api.put('/auth/users/me/', data, {
           headers: { Authorization: `Token ${this.token}` }
         })
         this.user = res.data
@@ -174,9 +182,11 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        const res = await axios.patch('/auth/users/me/', data, {
+        console.log('Sending partial update data:', data)
+        const res = await api.patch('/auth/users/me/', data, {
           headers: { Authorization: `Token ${this.token}` }
         })
+        console.log('Partial update response:', res.data)
         this.user = res.data
         return res.data
       } catch (e) {
@@ -190,7 +200,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.delete('/auth/users/me/', {
+        await api.delete('/auth/users/me/', {
           headers: { Authorization: `Token ${this.token}` }
         })
         this.user = null
@@ -207,7 +217,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.post('/auth/users/resend_activation/', data)
+        await api.post('/auth/users/resend_activation/', data)
       } catch (e) {
         this.error = e
         throw e
@@ -219,7 +229,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.post('/auth/users/reset_email_confirm/', data)
+        await api.post('/auth/users/reset_email_confirm/', data)
       } catch (e) {
         this.error = e
         throw e
@@ -231,7 +241,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.post('/auth/users/reset_email/', data)
+        await api.post('/auth/users/reset_email/', data)
       } catch (e) {
         this.error = e
         throw e
@@ -243,7 +253,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.post('/auth/users/reset_password_confirm/', data)
+        await api.post('/auth/users/reset_password_confirm/', data)
       } catch (e) {
         this.error = e
         throw e
@@ -255,7 +265,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.post('/auth/users/reset_password/', data)
+        await api.post('/auth/users/reset_password/', data)
       } catch (e) {
         this.error = e
         throw e
@@ -267,7 +277,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.post('/auth/users/set_email/', data, {
+        await api.post('/auth/users/set_email/', data, {
           headers: { Authorization: `Token ${this.token}` }
         })
       } catch (e) {
@@ -281,7 +291,7 @@ export const useAuthStore = defineStore('auth', {
       this.loading = true
       this.error = null
       try {
-        await axios.post('/auth/users/set_password/', data, {
+        await api.post('/auth/users/set_password/', data, {
           headers: { Authorization: `Token ${this.token}` }
         })
       } catch (e) {

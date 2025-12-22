@@ -5,15 +5,19 @@
       <div class="login-welcome">Hey jij,<br />welkom terug!</div>
       <form class="login-form" @submit.prevent="onSubmit">
         <div class="login-group">
-          <label for="username" class="login-label">Gebruikersnaam</label>
-          <input id="username" type="text" class="login-input" v-model="username" autocomplete="username" />
+          <label for="email" class="login-label">E-mail</label>
+          <input id="email" type="email" class="login-input" v-model="email" autocomplete="email" />
         </div>
         <div class="login-group">
           <label for="password" class="login-label">Wachtwoord</label>
           <input id="password" type="password" class="login-input" v-model="password" autocomplete="current-password" />
         </div>
         <div class="login-forgot-row">
-          <span class="login-forgot-label">Wachtwoord vergeten?</span>
+          <span
+            class="login-forgot-label"
+            @click="$router.push('/forget-password')"
+            style="cursor:pointer;"
+          >Wachtwoord vergeten?</span>
         </div>
         <button type="submit" class="login-btn-handwritten" :disabled="loading">
           {{ loading ? 'Even geduld...' : 'Inloggen' }}
@@ -36,7 +40,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const loading = ref(false)
 const error = ref(false)
@@ -49,7 +53,7 @@ async function onSubmit() {
   error.value = false
   errorMsg.value = ''
   try {
-    await auth.login({ username: username.value, password: password.value })
+    await auth.login({ email: email.value, password: password.value })
     router.push('/')
   } catch  {
     error.value = true

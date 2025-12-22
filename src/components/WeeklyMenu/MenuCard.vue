@@ -9,7 +9,7 @@
       style="text-decoration: none;"
     >
       <div class="weekmenu-img-stack" :class="{ 'reverse': imgPosition === 'right' }">
-        <img class="weekmenu-layout" src="/borders/Frame Recipe archives.png" :alt="imgAlt" />
+        <img class="weekmenu-layout" src="/borders/Frame Recipe archives.webp" :alt="imgAlt" />
         <img class="weekmenu-img" :src="imgSrc" :alt="imgAlt" />
       </div>
     </router-link>

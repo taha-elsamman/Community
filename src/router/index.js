@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 import HomeView from '../views/Home/HomeView.vue'
 
 const router = createRouter({
@@ -80,11 +81,31 @@ const router = createRouter({
       component: () => import('../views/LifeStyle/LifeStyle.vue'),
     },
     {
+      path: '/lifestyle/:id',
+      name: 'lifestyle-details',
+      component: () => import('../views/LifeStyle/LifeStyleDetails[id].vue'),
+    },
+    {
       path: '/neighborhood',
       name: 'neighborhood',
       component: () => import('../views/Neighborhood/Neighborhood.vue'),
     },
+    {
+      path: '/recipes',
+      name: 'recipes',
+      component: () => import('../views/Recipes/Recipes.vue'),
+    },
   ],
+})
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+  const publicPages = ['login', 'register', 'forget-password']
+  if (!publicPages.includes(to.name) && !authStore.isAuthenticated) {
+    next({ name: 'login' })
+  } else {
+    next()
+  }
 })
 
 export default router

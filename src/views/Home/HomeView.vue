@@ -5,7 +5,7 @@
 
     <div class="welcome-container">
       <h1 class="welcome-heading test">
-        Hoi <span class="welcome-name">[naam]</span>,
+        Hoi <span class="welcome-name">{{ first_name }}</span>,
       </h1>
       <div class="welcome-subtext">
         fijn dat je er bent. Klaar om vandaag een stap te zetten richting jouw doel?
@@ -24,40 +24,45 @@
         <div class="profile-left">
           <div class="avatar-wrapper">
             <div class="avatar-circle">
-              <img src="/Icons/user (3).png" alt="Logo" width="120" height="120"
-                class="d-inline-block align-text-top" />
-              <span class="avatar-camera">
+              <img :src="profileImageUrl" alt="Logo" width="120" height="120"
+                class="d-inline-block align-text-top avatar-circle" />
+              <span class="avatar-camera" @click="triggerFileInput" style="cursor:pointer;">
                 <img src="/Icons/camera (1).png" alt="Logo" width="30" height="30"
-                  class="d-inline-block align-text-top " />
+                  class="d-inline-block align-text-top" />
+                <input ref="fileInput" type="file" accept="image/*" style="display:none"
+                  @change="onProfileImageChange" />
               </span>
             </div>
             <div class="avatar-name">Naam</div>
             <div class="avatar-label">Hoe heet je?</div>
-            <input class="avatar-input" type="text" />
+            <input class="avatar-input" type="text" v-model="inputFirstName" />
           </div>
         </div>
         <div class="profile-right">
           <div class="form-group">
             <label>Wie ben jij in het kort?</label>
             <div class="form-desc">Eén zin over jezelf</div>
-            <input class="dashed-input" type="text" />
+            <input class="dashed-input" type="text" v-model="inputBio" />
           </div>
           <div class="form-group">
             <label>Wat brengt je hier?</label>
             <div class="form-desc">
               Denk aan: “Ik wil me weer energiek voelen en leren beter te eten zonder te stressen.”
             </div>
-            <input class="dashed-input" type="text" />
+            <input class="dashed-input" type="text" v-model="inputReason" />
           </div>
           <div class="form-group">
             <label>Favoriete gezonde gewoonte:</label>
             <div class="form-desc">
               Wat helpt jou op de been? (Bijv. wandelen na het eten, dagboekje bijhouden, op tijd offline gaan)
             </div>
-            <input class="dashed-input" type="text" />
+            <input class="dashed-input" type="text" v-model="inputFavoriteHealthyHabit" />
           </div>
           <div class="form-actions">
-            <button class="save-btn">Opslaan</button>
+            <button class="save-btn" @click="saveProfile">Opslaan</button>
+            <div v-if="showSavedPopup" class="saved-popup">
+              Je gegevens zijn opgeslagen!
+            </div>
           </div>
         </div>
       </div>
@@ -73,10 +78,10 @@
         <div class="buurt-left">
           <div class="avatar-wrapper">
             <div class="avatar-circle buurt-avatar">
-              <img src="/Icons/user (3).png" alt="Logo" width="60" height="60" />
+              <img :src="profileImageUrl" alt="Logo" width="60" height="60" />
             </div>
-            <div class="avatar-name buurt-avatar-name">Naam</div>
-            <div class="avatar-label buurt-avatar-label">Houdt van wandelen na het eten</div>
+            <div class="avatar-name buurt-avatar-name">{{ first_name }}</div>
+            <div class="avatar-label buurt-avatar-label">{{ status }}</div>
           </div>
         </div>
         <div class="buurt-right">
@@ -85,9 +90,9 @@
             <div class="buurt-form-desc">
               Deel wat jou bezighoudt, jouw bericht verschijnt meteen in de buurt.
             </div>
-            <input class="dashed-input" type="text" />
+            <input class="dashed-input" type="text" v-model="dailyStatus" />
             <div class="buurt-form-actions">
-              <button class="plaats-btn">Plaatsen</button>
+              <button @click="saveStatus" class="plaats-btn">Plaatsen</button>
             </div>
           </div>
         </div>
@@ -158,16 +163,134 @@
 
 <script setup>
 // ...existing code...
-import { ref } from 'vue'
-const selectedGender = ref(null)
-function selectGender(gender) {
-  selectedGender.value = gender
+import { onMounted, ref, watch } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
+
+const first_name = ref('Naam')
+const last_name = ref('')
+const user_name = ref('Naam')
+const status = ref('')
+const dailyStatus = ref('')
+const profileImageUrl = ref('/Icons/user (3).png')
+const fileInput = ref(null)
+
+const inputFirstName = ref('')
+const inputBio = ref('')
+const inputReason = ref('')
+const inputFavoriteHealthyHabit = ref('')
+
+const showSavedPopup = ref(false)
+
+// Set initial values safely (in case user is not loaded yet)
+function updateUserFields() {
+  const user = authStore.user || {}
+  first_name.value = user.first_name || 'Naam'
+  last_name.value = user.last_name || ''
+  user_name.value = (user.first_name || user.last_name)
+    ? `${user.first_name || ''} ${user.last_name || ''}`.trim()
+    : 'Naam'
+  if (user.profile_photo) {
+    profileImageUrl.value = user.profile_photo
+  }
+  inputFirstName.value = user.first_name ?? ''
+  inputBio.value = user.profile?.bio ?? ''
+  inputReason.value = user.profile?.reason_for_joining ?? ''
+  inputFavoriteHealthyHabit.value = user.profile?.favorite_healthy_habit ?? ''
+  status.value = user.profile?.favorite_healthy_habit ?? ''
+  dailyStatus.value = user.profile?.daily_status ?? ''
 }
-import { useRouter } from 'vue-router';
-const router = useRouter();
-function goToSnackBodyTypes() {
-  router.push('/snackpages/body-types');
+
+// Watch for changes in authStore.user (in case it's loaded async)
+watch(
+  () => authStore.user,
+  () => updateUserFields(),
+  { immediate: true, deep: true }
+)
+
+function triggerFileInput() {
+  if (fileInput.value) fileInput.value.click()
 }
+
+function onProfileImageChange(event) {
+  const file = event.target.files && event.target.files[0]
+  if (file) {
+    const reader = new FileReader()
+    reader.onload = e => {
+      profileImageUrl.value = e.target.result
+    }
+    reader.readAsDataURL(file)
+  }
+}
+
+async function saveProfile() {
+  try {
+    // Only send profile_photo if it's a File object, not a base64 string
+    const payload = {
+      first_name: inputFirstName.value,
+      profile: {
+        bio: inputBio.value,
+        reason_for_joining: inputReason.value,
+        favorite_healthy_habit: inputFavoriteHealthyHabit.value
+      }
+    }
+    // If you want to upload an image, use FormData and send the file, not a base64 string
+    if (fileInput.value && fileInput.value.files && fileInput.value.files[0]) {
+      const formData = new FormData()
+      formData.append('first_name', inputFirstName.value)
+      formData.append('bio', inputBio.value)
+      formData.append('reason_for_joining', inputReason.value)
+      formData.append('favorite_healthy_habit', inputFavoriteHealthyHabit.value)
+      formData.append('profile_photo', fileInput.value.files[0])
+      await authStore.partialUpdateMe(formData)
+    } else {
+      await authStore.partialUpdateMe(payload)
+    }
+    await authStore.fetchMe()
+    updateUserFields()
+    showSavedPopup.value = true
+    setTimeout(() => {
+      showSavedPopup.value = false
+    }, 2000)
+  } catch {
+    alert('Opslaan mislukt')
+  }
+}
+
+async function saveStatus() {
+  try {
+    // Only send profile_photo if it's a File object, not a base64 string
+    const payload = {
+      profile: {
+        daily_status: dailyStatus.value,
+      }
+    }
+    // If you want to upload an image, use FormData and send the file, not a base64 string
+    if (fileInput.value && fileInput.value.files && fileInput.value.files[0]) {
+      const formData = new FormData()
+      formData.append('daily_status', dailyStatus.value)
+      //formData.append('profile_photo', fileInput.value.files[0])
+      await authStore.partialUpdateMe(formData)
+    } else {
+      await authStore.partialUpdateMe(payload)
+    }
+    await authStore.fetchMe()
+    updateUserFields()
+    showSavedPopup.value = true
+    setTimeout(() => {
+      showSavedPopup.value = false
+    }, 2000)
+  } catch {
+    alert('Opslaan mislukt')
+  }
+}
+
+onMounted(async () => {
+  await authStore.fetchMe()
+  updateUserFields()
+})
+
+
 </script>
 
 
@@ -220,7 +343,7 @@ function goToSnackBodyTypes() {
 .avatar-wrapper {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   /* Changed from center to flex-start */
 }
 
@@ -420,7 +543,7 @@ function goToSnackBodyTypes() {
   margin-top: 0.1rem;
   font-size: 0.95rem;
   color: #757575;
-  text-align: left;
+  text-align: center;
   max-width: 90px;
   word-break: break-word;
 }
@@ -775,5 +898,28 @@ function goToSnackBodyTypes() {
   .macro-title {
     font-size: 1rem;
   }
+}
+
+.saved-popup {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e06ca9;
+  color: #fff;
+  padding: 0.7rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-family: inherit;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  z-index: 9999;
+  animation: fadeInOut 2s linear;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
 }
 </style>

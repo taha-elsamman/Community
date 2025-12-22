@@ -1,67 +1,36 @@
 <template>
-  <div class="meal-details-container" v-if="recipe">
-    <h1 class="meal-title">{{ recipe.name }}</h1>
-    <div class="meal-intro">{{ recipe.description }}</div>
+  <div class="meal-details-container" v-if="blog">
+    <h1 class="meal-title">{{ blog.title }}</h1>
+    <div class="macro-squiggle">
+      <svg width="240" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
+        <path
+          d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 T138 12 T158 12 T178 12 T198 12 T218 12 T238 12"
+          stroke="#222" stroke-width="2" fill="none" />
+      </svg>
+    </div>
     <div class="meal-img-section">
       <div class="meal-img-stack">
-        <img class="meal-img" :src="recipe.image ? ('https://community.projectlifestyle.nl/' + recipe.image) : '/photos/default.jpg'" :alt="recipe.name" />
-        <img class="meal-img-frame" src="/borders/Frame Recipe details.webp" alt="" />
-        <button class="meal-fav-btn" aria-label="Add to favorites" @click="toggleFav">
-          <img v-show="!isFav" src="/Icons/Webp/heart.webp" width="50" alt="" class="fav-icon fav-icon-abs" />
-          <img v-show="isFav" src="/Icons/Webp/Heart Saved.webp" width="50" alt="" class="fav-icon fav-icon-abs" />
-        </button>
+        <img class="meal-img" :src="blog.image ? ('https://community.projectlifestyle.nl' + blog.image) : ''"
+          :alt="blog.title" />
+        <img class="meal-img-frame" src="/borders/Frame Lifestyle tips details.webp" alt="" />
       </div>
     </div>
     <div class="meal-sections row">
-      <div class="meal-ingredients col-lg-3 col-md-4 col-sm-6">
-        <h2 class="meal-section-title">Ingrediënten</h2>
-        <svg width="120" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
-          <path
-            d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 T138 12 T158 12 T178 12 T198 12 T218 12 T238 12"
-            stroke="#222" stroke-width="2" fill="none" />
-        </svg>
-        <div class="meal-portion-select">
-          <label for="portion">Aantal personen</label><br>
-          <select id="portion" class="mt-2">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-          </select>
-        </div>
-        <div class="meal-checkbox-group" v-if="recipe.labels && recipe.labels.length">
-          <div class="meal-checkbox-label">Labels</div>
-          <div class="meal-checkbox-list">
-            <label v-for="label in recipe.labels" :key="label.id">
-              <input type="checkbox" checked disabled /> {{ label.name }}
-            </label>
-          </div>
-        </div>
-        <div class="meal-checkbox-group">
-          <div class="meal-checkbox-label">Ingrediënten</div>
-          <div class="meal-checkbox-list">
-            <div v-for="item in recipe.recipe_ingredients" :key="item.id">
-              {{ item.quantity }} {{ item.uom || '' }} {{ item.ingredient.name }}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="meal-preparation col-lg-8 col-md-8 col-sm-12">
+      <div class="meal-preparation col-12">
         <h2 class="meal-section-title">Bereidingswijze</h2>
         <svg width="120" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
           <path
             d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 T138 12 T158 12 T178 12 T198 12 T218 12 T238 12"
             stroke="#222" stroke-width="2" fill="none" />
         </svg>
-        <div class="meal-step" v-for="(step, idx) in recipe.recipe_steps" :key="step.id">
-          <div class="meal-step-title">Stap {{ idx + 1 }}</div>
-          <div class="meal-step-desc">{{ step.step }}</div>
+        <div class="meal-step">
+          <div class="meal-step-desc" v-html="blog.content"></div>
         </div>
       </div>
     </div>
     <!-- Kookpraat Section Start -->
     <div class="kookpraat-section">
-      <div class="kookpraat-title">Kookpraat</div>
+      <div class="kookpraat-title">Praat mee</div>
       <div class="kookpraat-squiggle">
         <svg width="120" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
           <path
@@ -70,41 +39,145 @@
         </svg>
       </div>
       <div class="kookpraat-desc">
-        Vertel hieronder hoe het bij jou ging. Was het een succes, een kleine keukenramp of iets daartussenin?<br>
-        Deel je tips, je tweaks en je ‘waarom doe ik dit mezelf aan’ momenten.<br>
-        En als je ergens op vastloopt, gooi je vraag erin. Ik ben er.
+        Dit onderwerp roept vaak meer op dan je denkt. Hoe is dat voor jou? Laat een reactie achter en praat mee.
       </div>
-      <WriteCommentBox :border-color="'1.5px dashed #B3C7E6'" />
-      <CommentBox type="success" typeLabel="" avatar="/Icons/user (3).png" author="Loukie" time=""
-        meta="Houdt van wandelen na het eten" body="Cupcake ipsum dolor sit amet pie jelly-o candy. Tart I love I love marzipan pie pie chocolate bonbon donut.
-              Halvah marzipan gingerbread I love I love cotton candy biscuit. Cupcake oat cake gummi bears bonbon brownie
-              ice cream biscuit. Bear claw liquorice brownie caramels donut cake gummies gingerbread. Chupa chups pastry
-              bonbon donut gummi bears pastry chupa chups chocolate cake. I love dragée sesame snaps macaroon gummi bears
-              macaroon I love." :color="'#666'" @like="onLike" @reply="onReply" @report="onReport" />
+      <!-- Inline WriteCommentBox code start -->
+      <div class="bankhangen-form-row">
+        <div>
+          <img class="bankhangen-avatar"
+            :src="authStore.user['profile_photo'] ? (authStore.user['profile_photo']) : '/Icons/user (3).png'"
+            alt="Profile Picture" />
+        </div>
+        <div class="bankhangen-form bankhangen-form-row" :style="{ border: '1.5px dashed #B3C7E6' }">
+          <textarea class="bankhangen-input" placeholder="Reageer op de vraag" v-model="newComment"></textarea>
+          <div class="bankhangen-input-actions">
+            <div class="bankhangen-comment-btns">
+              <!--
+              <img src="/Icons/happy.png" alt="happy btn" width="20" />
+              <img src="/Icons/gallery.png" alt="gallery btn" width="25" />
+              -->
+            </div>
+            <div class="bankhangen-send-message">
+              <img src="/Icons/send-message.png" alt="send btn" width="25" @click="submitComment"
+                style="cursor:pointer" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Inline WriteCommentBox code end -->
+      <div v-for="comment in comments" :key="comment.id">
+        <CommentBox type="success" typeLabel="" :avatar="comment.user?.photo || '/Icons/user (3).png'"
+          :author="comment.user?.first_name + ' ' + comment.user?.last_name || comment.user?.username || 'Gebruiker'"
+          :status="comment.user?.status || ''"
+          :time="comment.created_at" :meta="comment.user?.meta || ''" :body="comment.content || comment.text || ''"
+          :color="'#666'" :replies="(comment.replies || []).map(reply => ({
+            ...reply,
+            likes_count: reply.likes_count,
+            is_liked: reply.is_liked
+          }))" :likes-count="comment.likes_count" :is-liked="comment.is_liked" :userId="comment.user?.id || null"
+          :blogId="id" :commentId="comment.id" :page="currentPage" :pageSize="pageSize" @like="onLike" @reply="onReply"
+          @report="onReport" />
+      </div>
+      <div v-if="totalPages > 1" class="custom-pagination">
+        <button class="pagination-arrow" :class="{ disabled: currentPage === 1 }" @click="changePage(currentPage - 1)"
+          :disabled="currentPage === 1">
+          <img src="/Icons/Webp/Pagination arrow.webp" alt="Vorige" class="pagination-arrow-img left" />
+        </button>
+        <span v-for="page in visiblePages" :key="page" :class="['page-number', { active: page === currentPage }]"
+          @click="changePage(page)">{{ page }}</span>
+        <button class="pagination-arrow" :class="{ disabled: currentPage === totalPages }"
+          @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">
+          <img src="/Icons/Webp/Pagination arrow.webp" alt="Volgende" class="pagination-arrow-img right" />
+        </button>
+      </div>
     </div>
     <!-- Kookpraat Section End -->
   </div>
 </template>
 
 <script setup>
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
-import WriteCommentBox from '@/components/WriteCommentBox.vue'
-import CommentBox from '@/components/CommentBox.vue'
-import { ref, onMounted } from 'vue'
 import { useContentStore } from '@/stores/content-store'
+import CommentBox from '@/components/CommentBox.vue'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
 
 const route = useRoute()
 const id = route.params.id
 const contentStore = useContentStore()
-const recipe = ref(null)
+const blog = ref(null)
+const comments = ref([])
+const currentPage = ref(1)
+const pageSize = ref(10)
+const totalPages = ref(1)
+const totalCount = ref(0)
+const newComment = ref('')
 
 onMounted(async () => {
-  recipe.value = await contentStore.api_content_recipes_read(id)
+
+  await authStore.fetchMe()
+  console.log(authStore.user['profile_photo'])
+
+  blog.value = await contentStore.api_content_blogs_read(id)
+  await fetchComments()
 })
 
-const isFav = ref(false)
-function toggleFav() {
-  isFav.value = !isFav.value
+async function fetchComments(page = 1) {
+  try {
+    //console.log('Fetching comments for blog ID:', id, 'page:', page, 'pageSize:', pageSize.value)
+    const res = await contentStore.api_content_blogs_comments_list({
+      blogID: id,
+      page,
+      page_size: pageSize.value
+    })
+    // Ensure replies are always present for each comment (even if empty)
+    comments.value = (Array.isArray(res?.results) ? res.results : (Array.isArray(res) ? res : [])).map(comment => ({
+      ...comment,
+      replies: Array.isArray(comment.replies) ? comment.replies : []
+    }))
+    totalCount.value = res?.count || comments.value.length
+    totalPages.value = Math.ceil(totalCount.value / pageSize.value)
+    currentPage.value = page
+  } catch {
+    comments.value = []
+    totalPages.value = 1
+    totalCount.value = 0
+    currentPage.value = 1
+  }
+}
+
+function changePage(page) {
+  if (page < 1 || page > totalPages.value) return
+  fetchComments(currentPage.value = page)
+}
+
+const visiblePages = computed(() => {
+  // Show max 5 pages, center current page if possible
+  const pages = []
+  let start = Math.max(1, currentPage.value - 1)
+  let end = Math.min(totalPages.value, start + 2)
+  if (end - start < 2) start = Math.max(1, end - 2)
+  for (let i = start; i <= end; i++) pages.push(i)
+  return pages
+})
+
+async function submitComment() {
+  if (!newComment.value || !newComment.value.trim()) {
+    alert('Reactie mag niet leeg zijn')
+    return
+  }
+  try {
+    await contentStore.api_content_blogs_comments_create({
+      blogID: id,
+      data: { content: newComment.value }
+    })
+    newComment.value = ''
+    await fetchComments(1)
+  } catch (e) {
+    alert('Reactie plaatsen mislukt' + (e?.message ? ': ' + e.message : ''))
+  }
 }
 
 function onLike() {
@@ -162,6 +235,28 @@ function onReport() {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.macro-squiggle {
+  display: flex;
+  justify-content: center;
+  margin: 0.6rem 0 1rem 0;
+}
+
+.macro-squiggle svg {
+  width: 240px;
+  height: 24px;
+}
+
+@media (max-width: 600px) {
+  .macro-squiggle svg {
+    width: 120px;
+    height: 12px;
+  }
+
+  .macro-squiggle svg path {
+    stroke-width: 1;
+  }
 }
 
 .meal-img-stack {
@@ -450,7 +545,7 @@ function onReport() {
 }
 
 .kookpraat-title {
-  color: #b3c7e6;
+  color: #e06ca9;
   font-size: 2rem;
   font-family: inherit;
   font-weight: 400;
@@ -485,7 +580,7 @@ function onReport() {
   line-height: 1.6;
 }
 
-/* Responsive styles for kookpraat-desc */
+/* Responsive styles for kookpraat_desc */
 
 
 @media (max-width: 600px) {
@@ -647,5 +742,161 @@ function onReport() {
   .comment-btns {
     gap: 0.3rem;
   }
+}
+
+.bankhangen-form-row {
+  max-width: 1200px;
+  display: flex;
+  align-items: flex-start;
+  background: #fff;
+  border-radius: 12px;
+  padding: 10px 0px;
+  gap: 1.2rem;
+}
+
+.bankhangen-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #eee;
+  flex-shrink: 0;
+}
+
+.bankhangen-form {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1rem;
+}
+
+.bankhangen-input {
+  width: 100%;
+  min-height: 48px;
+  border: none;
+  font-size: 1.08rem;
+  color: #7fa184;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+  padding: 0.5rem 0.7rem;
+}
+
+.bankhangen-input-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.bankhangen-comment-btns {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.bankhangen-send-message {
+  display: flex;
+  align-items: center;
+}
+
+.bankhangen-send-message img,
+.bankhangen-comment-btns img {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.bankhangen-send-message img:hover,
+.bankhangen-comment-btns img:hover {
+  opacity: 0.7;
+}
+
+@media (max-width: 900px) {
+  .bankhangen-form-row {
+    margin-left: 1rem;
+    margin-right: 1rem;
+    width: calc(100% - 2rem);
+    padding: 1rem 0.5rem;
+    gap: 0.7rem;
+  }
+}
+
+@media (max-width: 499px) {
+  .bankhangen-form-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+    width: calc(100% - 0.4rem);
+    padding: 1rem 0.5rem;
+  }
+
+  .bankhangen-avatar {
+    width: 60px;
+    height: 60px;
+    margin-bottom: 40px;
+    margin-right: 20px;
+  }
+
+  .bankhangen-form {
+    gap: 0.3rem;
+  }
+
+  .bankhangen-input {
+    font-size: 1rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .bankhangen-input-actions {
+    gap: 0.3rem;
+  }
+
+  .bankhangen-comment-btns {
+    gap: 0.3rem;
+  }
+}
+
+
+.custom-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 2rem;
+  font-family: inherit;
+}
+
+.custom-pagination .arrow {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.custom-pagination .arrow.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.custom-pagination .page-number {
+  font-size: 1rem;
+  color: #888;
+  margin: 0 0.2rem;
+  cursor: pointer;
+  padding: 0 6px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+  font-weight: 400;
+}
+
+.custom-pagination .page-number.active {
+  color: #e06ca9;
+  font-weight: 700;
+
 }
 </style>

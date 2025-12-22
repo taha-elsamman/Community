@@ -15,3 +15,57 @@
   box-shadow: 12px 12px 24px 12px rgba(60,60,60,0.06);
   padding: 20px;
 }
+
+.pagination-page {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0 0.3rem;
+  transition: color 0.2s;
+  outline: none;
+  position: relative;
+}
+
+.pagination-page.active {
+  color: #e06ca9;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.pagination-page:not(.active):hover {
+  color: #e06ca9;
+}
+
+.pagination-arrow-img {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  filter: grayscale(0.5);
+  transition: filter 0.2s;
+}
+
+.pagination-arrow-img.left {
+  transform: rotate(180deg);
+}
+
+.pagination-arrow:disabled .pagination-arrow-img {
+  filter: grayscale(1) opacity(0.4);
+}
+
+.pagination-arrow {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0 0.3rem;
+  transition: color 0.2s;
+  outline: none;
+}
+
+.pagination-arrow:disabled {
+  color: #ccc;
+  cursor: default;
+}

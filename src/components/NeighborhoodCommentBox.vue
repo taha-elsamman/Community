@@ -2,11 +2,7 @@
   <div class="flex align-items-center">
     <img class="bankhangen-avatar" src="/Icons/user (3).png" alt="avatar" />
     <div class="bankhangen-form bankhangen-form-row" :style="{ border: borderColor }">
-      <textarea
-        class="bankhangen-input"
-        placeholder="Reageer op de vraag"
-        v-model="commentText"
-      ></textarea>
+      <textarea class="bankhangen-input" placeholder="Reageer op de vraag"></textarea>
       <div class="bankhangen-input-actions">
         <div class="bankhangen-comment-btns">
           <!--          <img src="/Icons/happy.png" alt="happy btn" width="20" />
@@ -14,18 +10,20 @@
           -->
 
         </div>
-        <div class="bankhangen-send-message">
-          <img
-            src="/Icons/send-message.png"
-            alt="send btn"
-            width="25"
-            @click="submitComment"
-            style="cursor:pointer"
-          />
-          <!-- Optional: Add a visible button for "Plaatsen" -->
-          <button class="bankhangen-reply-send" @click="submitComment" style="margin-left:8px;">
-            Plaatsen
-          </button>
+        <!-- Align dropdown left and send-message right -->
+        <div class="bankhangen-actions-row">
+          <div class="bankhangen-dropdown-row left">
+            <select v-model="selectedOption" class="bankhangen-dropdown">
+              <option disabled value="">Delen in</option>
+              <option value="buurtgesprekken">Buurtgesprekken</option>
+              <option value="succes">Succes</option>
+              <option value="struggles">Struggles</option>
+              <option value="vraag">Vraag</option>
+            </select>
+          </div>
+          <div class="bankhangen-send-message">
+            <img src="/Icons/send-message.png" alt="send btn" width="25" />
+          </div>
         </div>
       </div>
     </div>
@@ -34,35 +32,11 @@
 
 <script setup>
 import { ref } from 'vue'
-import { useContentStore } from '@/stores/content-store'
-
-const props = defineProps({
+defineProps({
   borderColor: { type: String, default: '1.5px dashed #e06ca9' },
-  blogId: { type: [Number, String], required: true }
-})
-const emit = defineEmits(['submit'])
+});
 
-const commentText = ref('')
-const contentStore = useContentStore()
-
-async function submitComment() {
-  if (!commentText.value.trim()) {
-    alert('Reactie mag niet leeg zijn')
-    return
-  }
-  try {
-    await contentStore.api_content_blogs_comments_create({
-      blogID: props.blogId,
-      data: { content: commentText.value }
-    })
-    emit('submit', commentText.value)
-    commentText.value = ''
-  } catch  {
-    alert('Reactie plaatsen mislukt')
-  }
-}
-
-
+const selectedOption = ref('');
 </script>
 
 <style scoped>
@@ -74,7 +48,6 @@ async function submitComment() {
   border-radius: 12px;
   padding: 1.2rem 1.5rem;
   gap: 1.2rem;
-  margin-bottom: 2.5rem;
 }
 
 .bankhangen-avatar {
@@ -115,6 +88,15 @@ async function submitComment() {
   width: 100%;
 }
 
+.bankhangen-actions-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.7rem;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .bankhangen-comment-btns {
   display: flex;
   flex-direction: row;
@@ -136,6 +118,37 @@ async function submitComment() {
 .bankhangen-send-message img:hover,
 .bankhangen-comment-btns img:hover {
   opacity: 0.7;
+}
+
+.bankhangen-dropdown-row {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+}
+
+.bankhangen-dropdown-row.left {
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  margin-right: auto;
+}
+
+.bankhangen-dropdown {
+  padding: 0.4rem 1rem;
+  border-bottom: 1.5px dashed #e06ca9;
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #888;
+  background: #fff;
+  font-family: inherit;
+  outline: none;
+  min-width: 160px;
+  transition: border 0.2s;
+  margin-right: 0.5rem;
+}
+
+.bankhangen-dropdown:focus {
+  border-color: #da2c89;
 }
 
 @media (max-width: 900px) {

@@ -15,7 +15,8 @@ axios.defaults.withCredentials = !isCrossOrigin
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://community.projectlifestyle.nl/'
+  //baseURL: import.meta.env.VITE_API_BASE_URL || 'https://community.projectlifestyle.nl/'
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:9000/'
 })
 
 // Helper function to get cookie value

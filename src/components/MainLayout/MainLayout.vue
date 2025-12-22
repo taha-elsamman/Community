@@ -1,5 +1,6 @@
 <template>
-	<div class="main-layout" :class="{ 'sidebar-closed': !sidebarOpen }">
+	<!-- Hide navbar and sidebar if on login page -->
+	<div v-if="!isLoginPage" class="main-layout" :class="{ 'sidebar-closed': !sidebarOpen }">
 		<MainNavbar
 			:sidebarOpen="sidebarOpen"
 			@toggleSidebar="toggleSidebar"
@@ -21,46 +22,54 @@
 			</main>
 		</div>
 	</div>
+	<!-- Only show slot content on login page -->
+	<div v-else>
+		<slot />
+	</div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import MainNavbar from './MainNavbar.vue';
-import MainSidebar from './MainSidebar.vue';
+import { ref, onMounted, computed } from 'vue'
+import { useRoute } from 'vue-router'
+import MainNavbar from './MainNavbar.vue'
+import MainSidebar from './MainSidebar.vue'
 
-const sidebarOpen = ref(true);
-const navbarOpen = ref(false);
+const route = useRoute()
+const isLoginPage = computed(() => route.path === '/login' || route.path === '/register' || route.path === '/forget-password')
+
+const sidebarOpen = ref(true)
+const navbarOpen = ref(false)
 
 const handleResize = () => {
-	sidebarOpen.value = window.innerWidth > 900;
-};
+	sidebarOpen.value = window.innerWidth > 900
+}
 
 function handleSidebarItemClick() {
 	if (window.innerWidth < 900) {
-		sidebarOpen.value = false;
+		sidebarOpen.value = false
 	}
 }
 
 function toggleSidebar() {
-	sidebarOpen.value = !sidebarOpen.value;
+	sidebarOpen.value = !sidebarOpen.value
 }
 function closeSidebar() {
-	sidebarOpen.value = false;
+	sidebarOpen.value = false
 }
 function openSidebar() {
-	sidebarOpen.value = true;
+	sidebarOpen.value = true
 }
 function closeNavbar() {
-	navbarOpen.value = false;
+	navbarOpen.value = false
 }
 function openNavbar() {
-	navbarOpen.value = true;
+	navbarOpen.value = true
 }
 
 onMounted(() => {
-	handleResize();
-	window.addEventListener('resize', handleResize);
-});
+	handleResize()
+	window.addEventListener('resize', handleResize)
+})
 </script>
 
 <style scoped>
