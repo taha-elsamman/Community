@@ -116,10 +116,6 @@ const totalCount = ref(0)
 const newComment = ref('')
 
 onMounted(async () => {
-
-  await authStore.fetchMe()
-  console.log(authStore.user['profile_photo'])
-
   blog.value = await contentStore.api_content_blogs_read(id)
   await fetchComments()
 })

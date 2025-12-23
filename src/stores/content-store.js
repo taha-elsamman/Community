@@ -138,33 +138,56 @@ export const useContentStore = defineStore('content', {
       return api.post(url, data)
     },
 
-    // POST /api/content/comments/{id}/reply/ -> api_content_comments_reply_create
+    // POST /api/content/blog-comments/{id}/report/ -> api_content_recipe_comments_report_create
+    async api_content_comments_report_create({ commentID }) {
+      if (!commentID) throw new Error('commentID is required for api_content_recipe_comments_report_create')
+      const url = `/api/content/comments/${commentID}/report/`
+      return api.post(url)
+    },
+    // DELETE /api/content/blog-comments/{id}/report/ -> api_content_recipe_comments_report_delete
+    async api_content_comments_report_delete({ commentID }) {
+      if (!commentID) throw new Error('commentID is required for api_content_recipe_comments_report_delete')
+      const url = `/api/content/comments/${commentID}/report/`
+      return api.delete(url)
+    },
+
+       // POST /api/content/comments/{id}/reply/ -> api_content_comments_reply_create
     async api_content_comments_reply_create({ commentID, data }) {
+      console.log('api_content_recipes_comments_reply_create called with commentID:', commentID, 'and data:', data)
       if (!commentID) throw new Error('commentID is required for api_content_comments_reply_create')
       if (!data) throw new Error('data is required for api_content_comments_reply_create')
       const url = `/api/content/comments/${commentID}/reply/`
       return api.post(url, data)
     },
 
-    // POST /api/content/comments/{id}/like/ -> api_content_comments_like_create
+
+
+
+      // POST /api/content/recipes/{id}/comments/ -> api_content_recipes_comments_create
+    async api_content_recipes_comments_create({ recipeID, data }) {
+      if (!recipeID) throw new Error('recipeID is required for api_content_recipes_comments_create')
+      if (!data) throw new Error('data is required for api_content_recipes_comments_create')
+      const url = `/api/content/recipes/${recipeID}/comments/`
+      return api.post(url, data)
+    },
+
+
+       // POST /api/content/comments/{id}/reply/ -> api_content_comments_reply_create
+    async api_content_recipes_comments_reply_create({ commentID, data }) {
+      console.log('api_content_recipes_comments_reply_create called with commentID:', commentID, 'and data:', data)
+      if (!commentID) throw new Error('commentID is required for api_content_comments_reply_create')
+      if (!data) throw new Error('data is required for api_content_comments_reply_create')
+      const url = `/api/content/recipe-comments/${commentID}/reply/`
+      return api.post(url, data)
+    },
+    // POST /api/content/recipe-comments/{id}/like/ -> api_content_recipe_comments_like_create
     async api_content_comments_like_create({ commentID }) {
-      if (!commentID) throw new Error('commentID is required for api_content_comments_like_create')
+      if (!commentID) throw new Error('commentID is required for api_content_recipe_comments_like_create')
       const url = `/api/content/comments/${commentID}/like/`
       return api.post(url)
     },
 
-    // POST /api/content/comments/{id}/report/ -> api_content_comments_report_create
-    async api_content_comments_report_create({ commentID }) {
-      if (!commentID) throw new Error('commentID is required for api_content_comments_report_create')
-      const url = `/api/content/comments/${commentID}/report/`
-      return api.post(url)
-    },
-    // DELETE /api/content/comments/{id}/report/ -> api_content_comments_report_delete
-    async api_content_comments_report_delete({ commentID }) {
-      if (!commentID) throw new Error('commentID is required for api_content_comments_report_delete')
-      const url = `/api/content/comments/${commentID}/report/`
-      return api.delete(url)
-    },
+
     // GET /api/content/recipe-comments/{id}/ -> api_content_recipe_comments_read
     async api_content_recipe_comments_read({ commentID }) {
       if (!commentID) throw new Error('commentID is required for api_content_recipe_comments_read')
@@ -189,7 +212,8 @@ export const useContentStore = defineStore('content', {
       const url = `/api/content/recipe-comments/${commentID}/report/`
       return api.delete(url)
     },
-    // GET /api/content/recipes/{id}/comments/ -> api_content_recipes_comments_list
+
+    // GET /api/content/blogs/{id}/comments/ -> api_content_blogs_comments_list
     async api_content_recipes_comments_list({ recipeID, page = null, page_size = null } = {}) {
       if (!recipeID) throw new Error('recipeID is required for api_content_recipes_comments_list')
       const params = new URLSearchParams()
@@ -198,15 +222,24 @@ export const useContentStore = defineStore('content', {
       const url = params.toString()
         ? `/api/content/recipes/${recipeID}/comments/?${params.toString()}`
         : `/api/content/recipes/${recipeID}/comments/`
-      return api.get(url)
+      return this._fetch('recipeComments', () => api.get(url))
     },
 
-    // POST /api/content/recipes/{id}/comments/ -> api_content_recipes_comments_create
-    async api_content_recipes_comments_create({ recipeID, data }) {
-      if (!recipeID) throw new Error('recipeID is required for api_content_recipes_comments_create')
-      if (!data) throw new Error('data is required for api_content_recipes_comments_create')
-      const url = `/api/content/recipes/${recipeID}/comments/`
-      return api.post(url, data)
+    // GET /api/content/recipes/ -> api_content_recipes_list_with_params
+    async api_content_recipes_list_with_params({ page = null, page_size = null, language = null, search = null, portions = null, labels = null, preparation_time = null } = {}) {
+      const params = new URLSearchParams()
+      if (page !== null && page !== undefined) params.set('page', String(page))
+      if (page_size !== null && page_size !== undefined) params.set('page_size', String(page_size))
+      if (language !== null && language !== undefined) params.set('language', String(language))
+      if (search !== null && search !== undefined) params.set('search', String(search))
+      if (portions !== null && portions !== undefined) params.set('portions', String(portions))
+      if (labels !== null && labels !== undefined) params.set('labels', String(labels))
+      if (preparation_time !== null && preparation_time !== undefined) params.set('preparation_time', String(preparation_time))
+      const url = params.toString()
+        ? `/api/content/recipes/?${params.toString()}`
+        : '/api/content/recipes/'
+      return this._fetch('recipes', () => api.get(url))
     },
-  },
-})
+
+    
+  }})

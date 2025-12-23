@@ -1,13 +1,9 @@
 <template>
   <div class="weekmenu-item">
-    <router-link
-      :to="{
-        name: 'meal-details',
-        params: { id }
-      }"
-      class="weekmenu-img-link"
-      style="text-decoration: none;"
-    >
+    <router-link :to="{
+      name: 'meal-details',
+      params: { id }
+    }" class="weekmenu-img-link" style="text-decoration: none;">
       <div class="weekmenu-img-stack" :class="{ 'reverse': imgPosition === 'right' }">
         <img class="weekmenu-layout" src="/borders/Frame Recipe archives.webp" :alt="imgAlt" />
         <img class="weekmenu-img" :src="imgSrc" :alt="imgAlt" />
@@ -166,22 +162,26 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
     width: 100%;
     margin-bottom: 30px;
   }
+
   .weekmenu-img-stack {
     width: 100px;
     height: 100px;
     min-width: 100px;
     min-height: 100px;
   }
+
   .weekmenu-layout {
     width: 100px;
     height: 100px;
   }
+
   .weekmenu-img {
     width: 80px;
     height: 80px;
     top: 9px;
     left: 9px;
   }
+
   .weekmenu-info {
     max-width: 300px;
   }
@@ -190,7 +190,8 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
 
 @media (max-width: 600px) {
   .weekmenu-item {
-    flex-direction: row; /* Keep image and info side by side */
+    flex-direction: row;
+    /* Keep image and info side by side */
     align-items: center;
     justify-content: center;
     gap: 0.7rem;
@@ -198,6 +199,7 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
     margin-bottom: 30px;
     padding: 10px;
   }
+
   .weekmenu-img-stack {
     width: 100px;
     height: 100px;
@@ -205,16 +207,19 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
     min-height: 100px;
     margin: 0;
   }
+
   .weekmenu-layout {
     width: 100px;
     height: 100px;
   }
+
   .weekmenu-img {
     width: 85px;
     height: 80px;
     top: 9px;
     left: 9px;
   }
+
   .weekmenu-info,
   .weekmenu-info.info-right {
     max-width: 100vw;
@@ -224,12 +229,15 @@ const iconComment = props.iconComment || '/Icons/comment icon.png';
     order: unset;
     width: auto;
   }
+
   .weekmenu-item-title {
     font-size: 1rem;
   }
+
   .weekmenu-item-type {
     font-size: 0.9rem;
   }
+
   .weekmenu-item-meta {
     font-size: 0.9rem;
     gap: 0.7rem;

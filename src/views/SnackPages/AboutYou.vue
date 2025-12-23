@@ -88,8 +88,6 @@ function goToPrev() {
   font-family: 'Indie Flower', cursive, sans-serif;
 }
 .aboutyou-container {
-  min-height: 100vh;
-  min-width: 100vw;
   margin: 0;
   padding: 3rem 1rem 2rem 1rem;
   display: flex;

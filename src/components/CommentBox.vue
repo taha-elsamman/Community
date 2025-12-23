@@ -52,6 +52,7 @@
                   {{ formatRelativeTime(reply.created_at) }}
                 </span>
               </div>
+              <div class="bankhangen-post-meta">{{ reply.user?.status }}</div>
               <div class="bankhangen-reply-body">
                 <span v-html="formatBody(reply.content || reply.text || '')"></span>
               </div>
@@ -90,7 +91,7 @@ const props = defineProps({
   author: { type: String, default: '' },
   status: { type: String, default: '' },
   time: { type: String, default: '' },
-  meta: { type: String, default: 'Houdt van wandelen na het eten' },
+  meta: { type: String, default: '' },
   body: { type: String, default: '' },
   color: { type: String, default: '#e06ca9' },
   replies: { type: Array, default: () => [] },

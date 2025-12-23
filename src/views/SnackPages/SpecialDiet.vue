@@ -71,10 +71,8 @@ function goToNext() {
   font-family: 'Indie Flower', cursive, sans-serif;
 }
 .specialdiet-container {
-  min-height: 100vh;
-  min-width: 100vw;
   margin: 0;
-  padding: 2.5rem 1rem 2rem 1rem;
+  padding: 6rem 1rem 2rem 0rem;
   display: flex;
   flex-direction: column;
   align-items: center;

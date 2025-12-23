@@ -12,61 +12,9 @@
       </div>
     </div>
 
+    <Profile/>
 
-    <div class="welcome-container">
-      <h1 class="welcome-heading">
-        Stel je even voor <span class="yellow-text">(Na invullen vervangen door De buurt)</span>
-      </h1>
-      <div class="welcome-subtext">
-        Zullen we even kennismaken? Vertel ons wie jij bent en wat je hoopt te bereiken.
-      </div>
-      <div class="profile-form">
-        <div class="profile-left">
-          <div class="avatar-wrapper">
-            <div class="avatar-circle">
-              <img :src="profileImageUrl" alt="Logo" width="120" height="120"
-                class="d-inline-block align-text-top avatar-circle" />
-              <span class="avatar-camera" @click="triggerFileInput" style="cursor:pointer;">
-                <img src="/Icons/camera (1).png" alt="Logo" width="30" height="30"
-                  class="d-inline-block align-text-top" />
-                <input ref="fileInput" type="file" accept="image/*" style="display:none"
-                  @change="onProfileImageChange" />
-              </span>
-            </div>
-            <div class="avatar-name">Naam</div>
-            <div class="avatar-label">Hoe heet je?</div>
-            <input class="avatar-input" type="text" v-model="inputFirstName" />
-          </div>
-        </div>
-        <div class="profile-right">
-          <div class="form-group">
-            <label>Wie ben jij in het kort?</label>
-            <div class="form-desc">Eén zin over jezelf</div>
-            <input class="dashed-input" type="text" v-model="inputBio" />
-          </div>
-          <div class="form-group">
-            <label>Wat brengt je hier?</label>
-            <div class="form-desc">
-              Denk aan: “Ik wil me weer energiek voelen en leren beter te eten zonder te stressen.”
-            </div>
-            <input class="dashed-input" type="text" v-model="inputReason" />
-          </div>
-          <div class="form-group">
-            <label>Favoriete gezonde gewoonte:</label>
-            <div class="form-desc">
-              Wat helpt jou op de been? (Bijv. wandelen na het eten, dagboekje bijhouden, op tijd offline gaan)
-            </div>
-            <input class="dashed-input" type="text" v-model="inputFavoriteHealthyHabit" />
-          </div>
-          <div class="form-actions">
-            <button class="save-btn" @click="saveProfile">Opslaan</button>
-            <div v-if="showSavedPopup" class="saved-popup">
-              Je gegevens zijn opgeslagen!
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
 
     <!-- De buurt section (added below existing content) -->
     <div class="buurt-section">
@@ -100,7 +48,11 @@
     </div>
 
     <!-- Macro’s berekenen section (added below all existing content) -->
+
     <div class="macro-section">
+      <div class="macro-title mb-5">Macro’s berekenen</div>
+      <AboutYou />
+      <!--
       <div class="macro-card">
         <div class="macro-title mb-5">Macro’s berekenen</div>
         <div class="macro-header">Even over jou</div>
@@ -156,6 +108,8 @@
           </div>
         </div>
       </div>
+      -->
+
     </div>
   </div>
 </template>
@@ -165,6 +119,8 @@
 // ...existing code...
 import { onMounted, ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import AboutYou from '../SnackPages/AboutYou.vue'
+import Profile from '../Profile/Profile.vue'
 const authStore = useAuthStore()
 
 const first_name = ref('Naam')
@@ -208,54 +164,6 @@ watch(
   { immediate: true, deep: true }
 )
 
-function triggerFileInput() {
-  if (fileInput.value) fileInput.value.click()
-}
-
-function onProfileImageChange(event) {
-  const file = event.target.files && event.target.files[0]
-  if (file) {
-    const reader = new FileReader()
-    reader.onload = e => {
-      profileImageUrl.value = e.target.result
-    }
-    reader.readAsDataURL(file)
-  }
-}
-
-async function saveProfile() {
-  try {
-    // Only send profile_photo if it's a File object, not a base64 string
-    const payload = {
-      first_name: inputFirstName.value,
-      profile: {
-        bio: inputBio.value,
-        reason_for_joining: inputReason.value,
-        favorite_healthy_habit: inputFavoriteHealthyHabit.value
-      }
-    }
-    // If you want to upload an image, use FormData and send the file, not a base64 string
-    if (fileInput.value && fileInput.value.files && fileInput.value.files[0]) {
-      const formData = new FormData()
-      formData.append('first_name', inputFirstName.value)
-      formData.append('bio', inputBio.value)
-      formData.append('reason_for_joining', inputReason.value)
-      formData.append('favorite_healthy_habit', inputFavoriteHealthyHabit.value)
-      formData.append('profile_photo', fileInput.value.files[0])
-      await authStore.partialUpdateMe(formData)
-    } else {
-      await authStore.partialUpdateMe(payload)
-    }
-    await authStore.fetchMe()
-    updateUserFields()
-    showSavedPopup.value = true
-    setTimeout(() => {
-      showSavedPopup.value = false
-    }, 2000)
-  } catch {
-    alert('Opslaan mislukt')
-  }
-}
 
 async function saveStatus() {
   try {
@@ -921,5 +829,13 @@ onMounted(async () => {
   10% { opacity: 1; }
   90% { opacity: 1; }
   100% { opacity: 0; }
+}
+
+.avatar-circle-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
 }
 </style>

@@ -2,17 +2,20 @@
 	<aside class="main-sidebar" :class="{ closed: !open }">
 		<ul class="sidebar-nav">
 			<li>
-				<router-link to="/" class="sidebar-link" @click="handleItemClick">De voordeur</router-link>
+				<RouterLink to="/" class="sidebar-link" @click="handleItemClick">De voordeur</RouterLink>
 			</li>
 			<li>
-				<router-link to="/meals" class="sidebar-link" @click="handleItemClick">Koelkastpraat</router-link>
+				<RouterLink to="/meals" class="sidebar-link" @click="handleItemClick">Koelkastpraat</RouterLink>
 			</li>
 			<li>
-				<router-link to="/bankhangen" class="sidebar-link" @click="handleItemClick">Bankhangen</router-link></li>
+				<RouterLink to="/bankhangen" class="sidebar-link" @click="handleItemClick">Bankhangen</RouterLink></li>
 			<li><a href="#" @click="handleItemClick">De keukentafel</a></li>
 			<li><a href="#" @click="handleItemClick">De wasmand</a></li>
 			<li><a href="#" @click="handleItemClick">De boodschappenlijst</a></li>
-			<li><router-link to="/life-style" class="sidebar-link" @click="handleItemClick">Lifestyle tips</router-link></li>
+			<li><RouterLink to="/life-style" class="sidebar-link" @click="handleItemClick">Lifestyle tips</RouterLink></li>
+      <li><RouterLink to="/recipes" class="sidebar-link" @click="handleItemClick">ِAll Recipes</RouterLink></li>
+			<li><RouterLink to="/neighborhood" class="sidebar-link" @click="handleItemClick">Neighborhood</RouterLink></li>
+			<li><RouterLink to="/practical-tips" class="sidebar-link" @click="handleItemClick">Practical Tips</RouterLink></li>
 		</ul>
 	</aside>
 </template>

@@ -52,6 +52,7 @@
                   {{ formatRelativeTime(reply.created_at) }}
                 </span>
               </div>
+              <div class="bankhangen-post-meta">{{ reply.user?.status }}</div>
               <div class="bankhangen-reply-body">
                 <span v-html="formatBody(reply.content || reply.text || '')"></span>
               </div>
@@ -90,15 +91,15 @@ const props = defineProps({
   author: { type: String, default: '' },
   status: { type: String, default: '' },
   time: { type: String, default: '' },
-  meta: { type: String, default: 'Houdt van wandelen na het eten' },
+  meta: { type: String, default: '' },
   body: { type: String, default: '' },
   color: { type: String, default: '#e06ca9' },
   replies: { type: Array, default: () => [] },
   likesCount: { type: [Number, String], default: 0 },
   isLiked: { type: Boolean, default: false },
   userId: { type: [Number, String], default: null },
-  blogId: { type: [Number, String], default: null },
   commentId: { type: [Number, String], default: null },
+  recipeId: { type: [Number, String], default: null },
   page: { type: Number, default: 1 },
   pageSize: { type: Number, default: 10 }
 })
@@ -123,10 +124,10 @@ const localIsReported = ref(false)
 const replyLocalIsReported = ref([])
 
 onMounted(async () => {
-  if (props.blogId) {
+  if (props.recipeId) {
     try {
-      const res = await contentStore.api_content_blogs_comments_list({
-        blogID: props.blogId,
+      const res = await contentStore.api_content_recipes_comments_list({
+        recipeID: props.recipeId,
         page: props.page,
         page_size: props.pageSize
       })
@@ -159,18 +160,18 @@ function toggleReply() {
 }
 
 async function sendReply() {
-  console.log('Sending reply:', replyText.value, 'to comment ID:', props.commentId, 'on blog ID:', props.blogId)
+  console.log('Sending reply:', replyText.value, 'to comment ID:', props.commentId, 'on recipe ID:', props.recipeId)
   if (!replyText.value.trim()) return
   try {
-    await contentStore.api_content_comments_reply_create({
+    await contentStore.api_content_recipes_comments_reply_create({
       commentID: props.commentId,
       data: {
         content: replyText.value
       }
     })
-    if (props.blogId) {
-      const res = await contentStore.api_content_blogs_comments_list({
-        blogID: props.blogId,
+    if (props.recipeId) {
+      const res = await contentStore.api_content_recipes_comments_list({
+        recipeID: props.recipeId,
         page: props.page,
         page_size: props.pageSize
       })
@@ -192,7 +193,7 @@ async function sendReply() {
 
 async function toggleLike() {
   try {
-    await contentStore.api_content_comments_like_create({ commentID: props.commentId })
+    await contentStore.api_content_recipe_comments_like_create({ commentID: props.commentId })
     // Toggle local like state and count immediately
     if (localIsLiked.value) {
       localIsLiked.value = false
@@ -208,7 +209,7 @@ async function toggleLike() {
 
 async function toggleReplyLike(idx, reply) {
   try {
-    await contentStore.api_content_comments_like_create({ commentID: reply.id })
+    await contentStore.api_content_recipe_comments_like_create({ commentID: reply.id })
     if (replyLocalIsLiked.value[idx]) {
       replyLocalIsLiked.value[idx] = false
       replyLocalLikesCount.value[idx] = Math.max(0, replyLocalLikesCount.value[idx] - 1)
@@ -224,14 +225,14 @@ async function toggleReplyLike(idx, reply) {
 async function toggleReplyReport(idx, reply) {
   try {
     if (!replyLocalIsReported.value[idx]) {
-      const res = await contentStore.api_content_comments_report_create({ commentID: reply.id })
+      const res = await contentStore.api_content_recipe_comments_report_create({ commentID: reply.id })
       if (res && typeof res.is_reported !== 'undefined') {
         replyLocalIsReported.value[idx] = !!res.is_reported
       } else {
         replyLocalIsReported.value[idx] = true
       }
     } else {
-      await contentStore.api_content_comments_report_delete({ commentID: reply.id })
+      await contentStore.api_content_recipe_comments_report_delete({ commentID: reply.id })
       replyLocalIsReported.value[idx] = false
     }
   } catch {
@@ -243,7 +244,7 @@ async function toggleReport() {
   try {
     if (!localIsReported.value) {
       // Report the comment
-      const res = await contentStore.api_content_comments_report_create({ commentID: props.commentId })
+      const res = await contentStore.api_content_recipe_comments_report_create({ commentID: props.commentId })
       if (res && typeof res.is_reported !== 'undefined') {
         localIsReported.value = !!res.is_reported
       } else {
@@ -251,7 +252,7 @@ async function toggleReport() {
       }
     } else {
       // Unreport the comment
-      await contentStore.api_content_comments_report_delete({ commentID: props.commentId })
+      await contentStore.api_content_recipe_comments_report_delete({ commentID: props.commentId })
       localIsReported.value = false
     }
   } catch {

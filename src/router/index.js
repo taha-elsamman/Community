@@ -95,6 +95,16 @@ const router = createRouter({
       name: 'recipes',
       component: () => import('../views/Recipes/Recipes.vue'),
     },
+    {
+      path: '/practical-tips',
+      name: 'practical-tips',
+      component: () => import('../views/PracticalTips/PracticalTips.vue'),
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: () => import('../views/Profile/Profile.vue'),
+    },
   ],
 })
 

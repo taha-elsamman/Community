@@ -62,10 +62,8 @@ html, body, #app, .dietresult-container {
   box-sizing: border-box;
 }
 .dietresult-container {
-  width: 100vw;
-  min-height: 100vh;
   margin: 0;
-  padding: 0;
+  padding: 6rem 1rem 2rem 0rem;
   display: flex;
   flex-direction: column;
   align-items: center;

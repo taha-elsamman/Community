@@ -45,7 +45,6 @@ import WriteCommentBox from '@/components/WriteCommentBox.vue'
 
 <style scoped>
 .bankhangen-container {
-  max-width: 900px;
   margin: 0 auto;
   padding: 5rem 2rem 2rem 2rem;
   font-family: 'Nunito', 'Indie Flower', cursive, sans-serif;

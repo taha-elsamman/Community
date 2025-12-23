@@ -59,8 +59,6 @@ function selectType(idx) {
   font-family: 'Indie Flower', cursive, sans-serif;
 }
 .bodytype-container {
-  min-height: 100vh;
-  min-width: 100vw;
   margin: 0;
   padding: 6rem 3rem 6rem 3rem;
   display: flex;

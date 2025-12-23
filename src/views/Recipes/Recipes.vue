@@ -9,7 +9,7 @@
 
     <div class="page-inner">
       <aside class="filters">
-        <div class="reset-filters">Reset filters</div>
+        <div class="reset-filters" @click="resetFilters">Reset filters</div>
         <div class="filter-card">
           <label class="search">
             <svg class="icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -19,8 +19,8 @@
             <input v-model="search" placeholder="Zoek iets lekkers" />
           </label>
 
-          <details class="filter-section">
-            <summary class="filter-title">Soort gerecht</summary>
+          <div class="filter-section">
+            <div class="filter-title">Soort gerecht</div>
             <div class="checkbox-list">
               <label v-for="opt in types" :key="opt" class="checkbox">
                 <input type="checkbox" v-model="selectedTypes" :value="opt" />
@@ -28,17 +28,17 @@
                 <span class="label-text">{{ opt }}</span>
               </label>
             </div>
-          </details>
+          </div>
 
-          <details class="filter-section">
-            <summary class="filter-title">Aantal personen</summary>
+          <div class="filter-section">
+            <div class="filter-title">Aantal personen</div>
             <select v-model="selectedPeople" class="people-select" aria-label="Aantal personen">
               <option v-for="n in [1,2,3,4,5]" :key="n" :value="n">{{ n }}</option>
             </select>
-          </details>
+          </div>
 
-          <details class="filter-section">
-            <summary class="filter-title">Voorkeuren</summary>
+          <div class="filter-section">
+            <div class="filter-title">Voorkeuren</div>
             <div class="checkbox-list">
               <label v-for="opt in extendedPrefs" :key="opt" class="checkbox">
                 <input type="checkbox" v-model="selectedPrefs" :value="opt" />
@@ -46,49 +46,75 @@
                 <span class="label-text">{{ opt }}</span>
               </label>
             </div>
-          </details>
+          </div>
 
-          <details class="filter-section">
-            <summary class="filter-title">Kooktijd</summary>
+          <div class="filter-section">
+            <div class="filter-title">Kooktijd</div>
             <div class="checkbox-list">
               <label v-for="opt in times" :key="opt" class="checkbox">
-                <input type="checkbox" v-model="selectedTimes" :value="opt" />
+                <input
+                  type="checkbox"
+                  :checked="selectedTimes[0] === opt"
+                  @change="selectTime(opt)"
+                />
                 <span class="checkmark" aria-hidden></span>
                 <span class="label-text">{{ opt }}</span>
               </label>
             </div>
-          </details>
+          </div>
 
         </div>
       </aside>
 
       <main class="results">
         <div class="grid">
-          <article v-for="item in filtered" :key="item.id" class="recipe-card">
+          <article
+            v-for="item in filtered"
+            :key="item.id"
+            class="recipe-card"
+            @click="goToDetails(item.id)"
+            style="cursor:pointer"
+          >
             <div class="img-wrap">
               <img class="photo" :src="item.image" :alt="item.title" />
               <img class="frame" src="/borders/Frame Recipe archives.webp" alt="" />
             </div>
-
             <div class="meta">
-              <div class="title-row">
+              <div class="title-row title-row-space">
                 <h3 class="title">{{ item.title }}</h3>
-                <button class="fav-btn fav-inline" @click="toggleFav(item.id)" :aria-pressed="isFav(item.id)">
+                <button class="fav-btn fav-inline" @click.stop="toggleFav(item.id)" :aria-pressed="isFav(item.id)">
                   <img v-if="!isFav(item.id)" src="/Icons/Webp/heart.webp" alt="fav" />
                   <img v-else src="/Icons/Webp/Heart Saved.webp" alt="saved" />
                 </button>
               </div>
-               <div class="subtitle">Ontbijt</div>
-
-               <div class="info">
-                 <span class="time">20 min</span>
-                 <span class="people">1</span>
-                 <span class="comments">1</span>
-               </div>
-             </div>
-
-            <!-- fav button moved into .meta title-row -->
+              <div class="subtitle">{{ item.type }}</div>
+              <div class="info">
+                <span class="time info-icon">
+                  <img src="/Icons/Webp/Recipes - cookingtime.webp" alt="clock icon" width="20" />
+                  <span class="info-number">{{ item.preparation_time }} min</span>
+                </span>
+                <span class="people info-icon">
+                  <img src="/Icons/Webp/Recipes - Portion size.webp" alt="people icon" width="20" />
+                  <span class="info-number">{{ item.portions }}</span>
+                </span>
+                <span class="comments info-icon">
+                  <img src="/Icons/Webp/Recipes - comments.webp" alt="comments icon" width="20" />
+                  <span class="info-number">{{ item.comments_count }}</span>
+                </span>
+              </div>
+            </div>
           </article>
+        </div>
+        <div v-if="totalPages > 1" class="custom-pagination">
+          <button class="pagination-arrow" :class="{ disabled: currentPage === 1 }" @click="changePage(currentPage - 1)" :disabled="currentPage === 1">
+            <img src="/Icons/Webp/Pagination arrow.webp" alt="Vorige" class="pagination-arrow-img left" />
+          </button>
+          <span v-for="page in visiblePages" :key="page" :class="['page-number', { active: page === currentPage }]" @click="changePage(page)">
+            {{ page }}
+          </span>
+          <button class="pagination-arrow" :class="{ disabled: currentPage === totalPages }" @click="changePage(currentPage + 1)" :disabled="currentPage === totalPages">
+            <img src="/Icons/Webp/Pagination arrow.webp" alt="Volgende" class="pagination-arrow-img right" />
+          </button>
         </div>
       </main>
     </div>
@@ -96,7 +122,12 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, computed, onMounted, watch, nextTick, onBeforeUnmount } from 'vue'
+import { useContentStore } from '@/stores/content-store'
+import { useRouter } from 'vue-router'
+
+const contentStore = useContentStore()
+const router = useRouter()
 
 const search = ref('')
 const selectedTypes = ref([])
@@ -117,45 +148,26 @@ const extendedPrefs = [
 ]
 const times = ['Tot 10 min', '10-20 min', '20-30 min', '30+ min']
 
-// sample repeated items to mirror the design
-const recipes = ref(
-  Array.from({ length: 10 }).map((_, i) => ({
-    id: String(i + 1),
-    title: 'Overnight oats met aardbeien',
-    image: '/photos/oats.png',
-    type: 'Ontbijt'
-  }))
-)
-
+const recipes = ref([])
 const favs = ref(new Set())
+const currentPage = ref(1)
+const pageSize = ref(10)
+const totalPages = ref(1)
+const totalCount = ref(0)
 
-function toggleFav(id) {
-  if (favs.value.has(id)) favs.value.delete(id)
-  else favs.value.add(id)
-  // force reactivity for Set
-  favs.value = new Set(favs.value)
+const timeMap = {
+  'Tot 10 min': '0:10',
+  '10-20 min': '10:20',
+  '20-30 min': '20:30',
+  '30+ min': '30+'
 }
-function isFav(id) {
-  return favs.value.has(id)
-}
 
-const filtered = computed(() => {
-  const s = search.value.trim().toLowerCase()
-  return recipes.value.filter(r => {
-    if (s && !r.title.toLowerCase().includes(s)) return false
-    if (selectedTypes.value.length && !selectedTypes.value.includes(r.type)) return false
-    // prefs not implemented against data, kept for UI
-    return true
-  })
-})
-
-
-// ensure details elements are open on wide screens and collapsed on small screens
 onMounted(async () => {
+  await fetchRecipes()
+  // ensure details elements are open on wide screens and collapsed on small screens
   if (typeof window === 'undefined') return
   const mq = window.matchMedia('(min-width: 900px)')
   const setOpen = (isWide) => {
-    // wait for DOM
     nextTick(() => {
       document.querySelectorAll('.filter-section').forEach((d) => {
         if (d instanceof HTMLDetailsElement) d.open = !!isWide
@@ -169,11 +181,108 @@ onMounted(async () => {
     mq.removeEventListener ? mq.removeEventListener('change', handler) : mq.removeListener(handler)
   })
 })
+
+watch([search, selectedTypes, selectedPrefs, selectedPeople, selectedTimes, currentPage], async () => {
+  await fetchRecipes()
+})
+
+async function fetchRecipes() {
+  // Map filters to endpoint parameters
+  let preparation_time = null
+  if (selectedTimes.value.length) {
+    preparation_time = selectedTimes.value
+      .map(val => timeMap[val] || val)
+      .join(',')
+  }
+  let labels = null
+  if (selectedPrefs.value.length) {
+    labels = selectedPrefs.value.join(',')
+  }
+  let typeLabel = null
+  if (selectedTypes.value.length) {
+    // eslint-disable-next-line no-unused-vars
+    typeLabel = selectedTypes.value.join(',')
+  }
+  const params = {
+    page: currentPage.value,
+    page_size: pageSize.value,
+    search: search.value,
+    portions: selectedPeople.value,
+    labels,
+    preparation_time,
+    // If your backend expects type as a label, add it to labels
+    // Otherwise, add a 'type' param if needed
+  }
+  const res = await contentStore.api_content_recipes_list_with_params(params)
+  recipes.value = Array.isArray(res?.results) ? res.results.map(r => ({
+    id: r.id,
+    title: r.name,
+    image: r.image ? (r.image.startsWith('http') ? r.image : 'https://community.projectlifestyle.nl' + r.image) : '/photos/default.jpg',
+    type: r.labels?.[0]?.name || '',
+    preparation_time: r.preparation_time,
+    portions: r.portions,
+    likes: r.likes,
+    is_liked: r.is_liked,
+    comments_count: r.comments_count
+  })) : []
+  totalCount.value = res?.count || recipes.value.length
+  totalPages.value = Math.ceil(totalCount.value / pageSize.value)
+}
+
+function toggleFav(id) {
+  if (favs.value.has(id)) favs.value.delete(id)
+  else favs.value.add(id)
+  favs.value = new Set(favs.value)
+}
+function isFav(id) {
+  return favs.value.has(id)
+}
+
+const filtered = computed(() => {
+  // The API already filters, so just return recipes.value
+  return recipes.value
+})
+
+function changePage(page) {
+  if (page < 1 || page > totalPages.value) return
+  currentPage.value = page
+  fetchRecipes()
+}
+
+const visiblePages = computed(() => {
+  // Show max 5 pages, center current page if possible
+  const pages = []
+  let start = Math.max(1, currentPage.value - 1)
+  let end = Math.min(totalPages.value, start + 2)
+  if (end - start < 2) start = Math.max(1, end - 2)
+  for (let i = start; i <= end; i++) pages.push(i)
+  return pages
+})
+
+function goToDetails(id) {
+  router.push(`/meal-details/${id}`)
+}
+
+function selectTime(opt) {
+  if (selectedTimes.value[0] === opt) {
+    selectedTimes.value = []
+  } else {
+    selectedTimes.value = [opt]
+  }
+}
+
+function resetFilters() {
+  selectedTypes.value = []
+  selectedPrefs.value = []
+  selectedPeople.value = 1
+  selectedTimes.value = []
+  search.value = ''
+}
 </script>
 
 <style scoped>
 .recipes-page {
-  padding: 2.4rem;
+  padding: 2.4rem 0rem;
   box-sizing: border-box;
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   color: #222;
@@ -182,7 +291,6 @@ onMounted(async () => {
 .page-header {
   width: 100%;
   box-sizing: border-box;
-  max-width: 1200px;
   margin-top: 2rem;
   margin-bottom: 5rem;
   padding: 0 2.4rem;
@@ -285,8 +393,8 @@ onMounted(async () => {
   flex-shrink: 0;
 }
 .checkbox input[type="checkbox"]:checked + .checkmark {
-  background: #eaf7ee;
-  border-color: #cdebd3;
+  background: #fff;
+  border-color: #e50768;
 }
 .checkbox input[type="checkbox"]:checked + .checkmark::after {
   content: "";
@@ -295,7 +403,7 @@ onMounted(async () => {
   top: 2px;
   width: 5px;
   height: 9px;
-  border: solid #2f9b57;
+  border: solid #e50768;
   border-width: 0 2px 2px 0;
   transform: rotate(45deg);
 }
@@ -377,7 +485,25 @@ onMounted(async () => {
 .meta { flex: 1 1 auto; }
 .title { margin: 0; font-size: 1.05rem; color: #555; font-weight: 600; }
 .subtitle { color: #9fb3c2; font-size: .92rem; margin-top: .2rem; }
-.info { color: #83a78f; margin-top: .4rem; font-size: .9rem; display: flex; gap: .8rem; align-items: center; }
+.info {
+  color: #83a78f;
+  margin-top: .4rem;
+  font-size: .9rem;
+  display: flex;
+  gap: .8rem;
+  align-items: center;
+}
+.info-icon {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.info-number {
+  margin-left: 2px;
+  color: #222;
+  font-size: .95rem;
+  display: inline-block;
+}
 
 /* Favorite button (inline next to title) - force fixed size */
 .fav-btn {
@@ -416,7 +542,17 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
 }
+.title-row-space {
+  justify-content: space-between;
+  width: calc(100% - 10px);
+}
 
+@media (min-width: 1400px) {
+  .title-row-space {
+    justify-content: space-between;
+    width: calc(100% - 120px);
+  }
+}
 /* Responsive adjustments */
 @media (max-width: 900px) {
   /* make filters wrap instead of scrolling */
@@ -489,5 +625,50 @@ onMounted(async () => {
   .filter-section { padding: 0; background: transparent; border: none; min-width: auto; }
   .filter-section > summary { display: none; }
   .filter-section .checkbox-list, .filter-section select { display: block; margin-top: 6px; }
+}
+
+.custom-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 2rem;
+  font-family: inherit;
+}
+
+.custom-pagination .pagination-arrow {
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+}
+
+.custom-pagination .pagination-arrow.disabled {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.custom-pagination .page-number {
+  font-size: 1rem;
+  color: #888;
+  margin: 0 0.2rem;
+  cursor: pointer;
+  padding: 0 6px;
+  border-radius: 4px;
+  transition: color 0.2s, background 0.2s;
+  font-weight: 400;
+}
+
+.custom-pagination .page-number.active {
+  color: #e06ca9;
+  font-weight: 700;
+}
+
+.pagination-arrow-img.left {
+  transform: rotate(180deg);
 }
 </style>
