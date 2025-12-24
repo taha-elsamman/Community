@@ -319,7 +319,7 @@ function formatBody(text) {
   object-fit: cover;
   background: #eee;
   flex-shrink: 0;
-  margin-top: 0.2rem;
+  margin-top: 1.5rem;
   margin-right: 20px;
 
 }

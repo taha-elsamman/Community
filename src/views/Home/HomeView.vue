@@ -19,7 +19,7 @@
     <div class="buurt-section">
       <div class="buurt-header-row">
         <h1 class="buurt-heading">De buurt</h1>
-        <a class="buurt-link" href="#">Bekijk de buurt</a>
+        <a class="buurt-link" href="#" @click.prevent="goToNeighborhood">Bekijk de buurt</a>
       </div>
       <div class="buurt-form-row">
         <div class="buurt-left">
@@ -61,7 +61,9 @@ import { useAuthStore } from '@/stores/auth'
 import AboutYou from '../SnackPages/AboutYou.vue'
 import Profile from '../Profile/Profile.vue'
 import NeighborhoodCommentBox from '@/components/NeighborhoodCommentBox.vue'
+import { useRouter } from 'vue-router'
 const authStore = useAuthStore()
+const router = useRouter()
 
 const first_name = ref('Naam')
 const last_name = ref('')
@@ -106,6 +108,10 @@ onMounted(async () => {
   await authStore.fetchMe()
   updateUserFields()
 })
+
+function goToNeighborhood() {
+  router.push('/neighborhood')
+}
 
 </script>
 
