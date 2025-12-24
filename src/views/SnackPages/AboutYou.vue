@@ -18,13 +18,13 @@
             <div class="aboutyou-gender-group">
               <button
                 class="aboutyou-gender-btn"
-                :class="{ active: selectedGender === 'vrouw' }"
+                :class="{ active: gender === 'vrouw' }"
                 @click="selectGender('vrouw')"
                 type="button"
               >Vrouw</button>
               <button
                 class="aboutyou-gender-btn"
-                :class="{ active: selectedGender === 'man' }"
+                :class="{ active: gender === 'man' }"
                 @click="selectGender('man')"
                 type="button"
               >Man</button>
@@ -33,7 +33,7 @@
           <div class="aboutyou-col">
             <div class="aboutyou-label aboutyou-label-pink">Wat is jouw leeftijd?</div>
             <div class="aboutyou-input-group">
-              <input class="aboutyou-input" type="number" min="0" />
+              <input class="aboutyou-input" type="number" min="0" v-model="age" />
               <span class="aboutyou-input-unit">jaar</span>
             </div>
           </div>
@@ -42,14 +42,14 @@
           <div class="aboutyou-col">
             <div class="aboutyou-label aboutyou-label-pink">Wat is jouw gewicht?</div>
             <div class="aboutyou-input-group">
-              <input class="aboutyou-input" type="number" min="0" />
+              <input class="aboutyou-input" type="number" min="0" v-model="weightKg" />
               <span class="aboutyou-input-unit">kg</span>
             </div>
           </div>
           <div class="aboutyou-col">
             <div class="aboutyou-label aboutyou-label-pink">Wat is jouw lengte?</div>
             <div class="aboutyou-input-group">
-              <input class="aboutyou-input" type="number" min="0" />
+              <input class="aboutyou-input" type="number" min="0" v-model="heightCm" />
               <span class="aboutyou-input-unit">cm</span>
             </div>
           </div>
@@ -66,21 +66,29 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { onMounted } from 'vue';
+import { useCalculatorStore } from '@/stores/calculatorStats';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-const selectedGender = ref(null);
+const store = useCalculatorStore();
+const { gender, age, weightKg, heightCm } = storeToRefs(store);
 
-function selectGender(gender) {
-  selectedGender.value = gender;
+function selectGender(val) {
+  gender.value = val;
 }
 
 function goToNext() {
+  store.updateState(); // Save to localstorage
   router.push('/snackpages/body-types');
 }
 function goToPrev() {
   router.push('/home');
 }
+
+onMounted(() => {
+  store.loadState();
+});
 </script>
 
 <style scoped>

@@ -8,9 +8,9 @@
         </svg>
       </div>
       <div class="bodytype-list row">
-        <div v-for="(item, idx) in bodytypes" :key="item.value" class=" col-lg-2 col-md-6 bodytype-item"
-          :class="{ selected: selectedIndex === idx }" @click="selectType(idx)" tabindex="0"
-          @keydown.enter="selectType(idx)" role="button" aria-pressed="selectedIndex === idx">
+        <div v-for="item in bodytypes" :key="item.value" class=" col-lg-2 col-md-6 bodytype-item"
+          :class="{ selected: bodyType === item.value }" @click="selectType(item.value)" tabindex="0"
+          @keydown.enter="selectType(item.value)" role="button" :aria-pressed="bodyType === item.value">
           <img :src="item.img" :alt="item.label" class="bodytype-img" />
           <div class="bodytype-label">{{ item.label }}</div>
         </div>
@@ -26,12 +26,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { useCalculatorStore } from '@/stores/calculatorStats';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
+const store = useCalculatorStore();
+const { bodyType } = storeToRefs(store);
 
 function goToNext() {
+  store.updateState();
   router.push('/snackpages/week-questions');
 }
 function goToPrev() {
@@ -46,12 +51,13 @@ const bodytypes = [
   { value: 'zwaar-obesitas', label: 'Zwaar obesitas', img: '/photos/bodytypes/zwaar-obesitas.webp' }
 ];
 
-const selectedIndex = ref(null);
-
-function selectType(idx) {
-  selectedIndex.value = idx;
+function selectType(val) {
+  bodyType.value = val;
 }
 
+onMounted(() => {
+  store.loadState();
+});
 </script>
 
 <style scoped>

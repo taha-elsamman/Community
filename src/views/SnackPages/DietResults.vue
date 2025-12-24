@@ -4,10 +4,28 @@
     <div class="snack-card">
       <h1 class="dietresult-title">Dit is jouw startpunt</h1>
       <div class="dietresult-desc">
-        Zoveel heeft jouw lijf gemiddeld nodig om in balans te blijven.<br>
-        <span class="dietresult-pink">Afvallen:</span> Eet ongeveer 15–20% minder dan dit aantal.<br>
-        <span class="dietresult-pink">Gewicht behouden:</span> Blijf rond dit aantal.<br>
-        <span class="dietresult-pink">Spieropbouw:</span> Eet 10–15% meer dan dit aantal.
+        <template v-if="goal === 1">
+          Dit heeft jouw lijf gemiddeld nodig om in balans te blijven.<br>
+        </template>
+        <template v-else>
+          Dit is jouw dagelijkse doel om jouw resultaat te behalen.<br>
+        </template>
+
+        <div style="font-size: 2rem; font-weight: bold; margin: 10px 0; color: #e06ca9;">
+          {{ fmt(targetKcal) }} kcal/dag
+        </div>
+
+        <div style="font-size: 1.1rem; margin-top: 10px;">
+          <div v-if="goal === 0">
+            <strong>Afvallen:</strong> We hebben {{ percentageText }} van je onderhoud ({{ fmt(maintenanceKcal) }} kcal) afgehaald.
+          </div>
+          <div v-else-if="goal === 2">
+            <strong>Spieropbouw:</strong> We hebben {{ percentageText }} aan je onderhoud ({{ fmt(maintenanceKcal) }} kcal) toegevoegd.
+          </div>
+          <div v-else>
+            <strong>Gewicht behouden:</strong> Blijf rond dit aantal om stabiel te blijven.
+          </div>
+        </div>
       </div>
       <div class="macro-squiggle">
         <svg width="240" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
@@ -17,19 +35,19 @@
       <div class="dietresult-macros-row">
         <div class="dietresult-macro dietresult-macro-eiwitten">
           <div class="macro-title">Eiwitten</div>
-          <div class="macro-amount">xx <span class="macro-unit">gram</span></div>
+          <div class="macro-amount">{{ macros.proteinG }} <span class="macro-unit">gram</span></div>
           <div class="macro-desc">voor herstel en<br>spierbehoud</div>
           <div class="macro-curve"></div>
         </div>
         <div class="dietresult-macro dietresult-macro-vetten">
           <div class="macro-title">Vetten</div>
-          <div class="macro-amount">xx <span class="macro-unit">gram</span></div>
+          <div class="macro-amount">{{ macros.fatG }} <span class="macro-unit">gram</span></div>
           <div class="macro-desc">voor energie en<br>hormonen</div>
           <div class="macro-curve"></div>
         </div>
         <div class="dietresult-macro dietresult-macro-koolhydraten">
           <div class="macro-title">Koolhydraten</div>
-          <div class="macro-amount">xx <span class="macro-unit">gram</span></div>
+          <div class="macro-amount">{{ macros.carbsG }} <span class="macro-unit">gram</span></div>
           <div class="macro-desc">voor brandstof<br>en focus</div>
           <div class="macro-curve"></div>
         </div>
@@ -43,12 +61,38 @@
 </template>
 
 <script setup>
+import { onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-// ...existing code...
+import { useCalculatorStore } from '@/stores/calculatorStats';
+import { storeToRefs } from 'pinia';
+
 const router = useRouter();
+const store = useCalculatorStore();
+const { targetKcal, macros, maintenanceKcal, goal, goalSpeed } = storeToRefs(store);
+
 function goHome() {
   router.push('/');
 }
+
+// Optional: Formatting helper
+const fmt = (n) => (Number.isFinite(n) ? Math.round(n).toLocaleString() : "0");
+
+const percentageText = computed(() => {
+  if (goal.value === 0) {
+    // Lose: Easy=15%, Normal=20%, Aggressive=25%
+    const vals = ['15%', '20%', '25%'];
+    return vals[goalSpeed.value] || '20%';
+  } else if (goal.value === 2) {
+    // Build: Easy=10%, Normal=12%, Aggressive=15%
+    const vals = ['10%', '12%', '15%'];
+    return vals[goalSpeed.value] || '12%';
+  }
+  return '';
+});
+
+onMounted(() => {
+  store.loadState();
+});
 </script>
 
 <style scoped>

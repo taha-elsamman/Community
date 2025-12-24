@@ -105,6 +105,11 @@ const router = createRouter({
       name: 'profile',
       component: () => import('../views/Profile/Profile.vue'),
     },
+    {
+      path: '/fatscalcu',
+      name: 'fatscalcu',
+      component: () => import('../views/Calculator/MacroCalculator.vue'),
+    },
   ],
 })
 

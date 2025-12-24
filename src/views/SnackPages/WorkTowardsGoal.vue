@@ -13,36 +13,36 @@
         <div class="worktowards-options">
           <div
             class="worktowards-option"
-            :class="{ selected: selectedGoal === 0 }"
+            :class="{ selected: goal === 0 }"
             @click="selectGoal(0)"
             tabindex="0"
             @keydown.enter="selectGoal(0)"
             role="button"
-            aria-pressed="selectedGoal === 0"
+            :aria-pressed="goal === 0"
           >
             Ik wil afvallen
             <div class="worktowards-curve"></div>
           </div>
           <div
             class="worktowards-option"
-            :class="{ selected: selectedGoal === 1 }"
+            :class="{ selected: goal === 1 }"
             @click="selectGoal(1)"
             tabindex="0"
             @keydown.enter="selectGoal(1)"
             role="button"
-            aria-pressed="selectedGoal === 1"
+            :aria-pressed="goal === 1"
           >
             Ik wil mijn<br>gewicht behouden
             <div class="worktowards-curve"></div>
           </div>
           <div
             class="worktowards-option"
-            :class="{ selected: selectedGoal === 2 }"
+            :class="{ selected: goal === 2 }"
             @click="selectGoal(2)"
             tabindex="0"
             @keydown.enter="selectGoal(2)"
             role="button"
-            aria-pressed="selectedGoal === 2"
+            :aria-pressed="goal === 2"
           >
             Ik wil (meer)<br>spiermassa opbouwen
             <div class="worktowards-curve"></div>
@@ -55,36 +55,36 @@
         <div class="worktowards-options">
           <div
             class="worktowards-option"
-            :class="{ selected: selectedSpeed === 0 }"
+            :class="{ selected: goalSpeed === 0 }"
             @click="selectSpeed(0)"
             tabindex="0"
             @keydown.enter="selectSpeed(0)"
             role="button"
-            aria-pressed="selectedSpeed === 0"
+            :aria-pressed="goalSpeed === 0"
           >
             Rustig aan
             <div class="worktowards-curve"></div>
           </div>
           <div
             class="worktowards-option"
-            :class="{ selected: selectedSpeed === 1 }"
+            :class="{ selected: goalSpeed === 1 }"
             @click="selectSpeed(1)"
             tabindex="0"
             @keydown.enter="selectSpeed(1)"
             role="button"
-            aria-pressed="selectedSpeed === 1"
+            :aria-pressed="goalSpeed === 1"
           >
             Normaal tempo
             <div class="worktowards-curve"></div>
           </div>
           <div
             class="worktowards-option"
-            :class="{ selected: selectedSpeed === 2 }"
+            :class="{ selected: goalSpeed === 2 }"
             @click="selectSpeed(2)"
             tabindex="0"
             @keydown.enter="selectSpeed(2)"
             role="button"
-            aria-pressed="selectedSpeed === 2"
+            :aria-pressed="goalSpeed === 2"
           >
             Ik ga ervoor
             <div class="worktowards-curve"></div>
@@ -101,27 +101,33 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { useCalculatorStore } from '@/stores/calculatorStats';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-
-const selectedGoal = ref(null);
-const selectedSpeed = ref(null);
+const store = useCalculatorStore();
+const { goal, goalSpeed } = storeToRefs(store);
 
 function selectGoal(idx) {
-  selectedGoal.value = idx;
+  goal.value = idx;
 }
 function selectSpeed(idx) {
-  selectedSpeed.value = idx;
+  goalSpeed.value = idx;
 }
 
 function goToNext() {
+  store.updateState();
   router.push('/snackpages/special-diet');
 }
 function goToPrev() {
   router.push('/snackpages/week-questions');
 }
+
+onMounted(() => {
+  store.loadState();
+});
 </script>
 
 <style scoped>

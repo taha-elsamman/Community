@@ -10,29 +10,29 @@
         </svg>
       </div>
       <div class="specialdiet-options-row">
-        <div class="specialdiet-option" :class="{ selected: selectedDiet === 0 }" @click="toggleDiet(0)" tabindex="0"
-          @keydown.enter="toggleDiet(0)" role="button" aria-pressed="selectedDiet === 0">
+        <div class="specialdiet-option" :class="{ selected: dietType === 0 }" @click="toggleDiet(0)" tabindex="0"
+          @keydown.enter="toggleDiet(0)" role="button" :aria-pressed="dietType === 0">
           <div class="specialdiet-option-main">Nee</div>
           <div class="specialdiet-option-desc">ik eet gewoon gevarieerd</div>
           <div class="specialdiet-curve"></div>
         </div>
-        <div class="specialdiet-option" :class="{ selected: selectedDiet === 1 }" @click="toggleDiet(1)" tabindex="0"
-          @keydown.enter="toggleDiet(1)" role="button" aria-pressed="selectedDiet === 1">
+        <div class="specialdiet-option" :class="{ selected: dietType === 1 }" @click="toggleDiet(1)" tabindex="0"
+          @keydown.enter="toggleDiet(1)" role="button" :aria-pressed="dietType === 1">
           <div class="specialdiet-option-main">Ja</div>
           <div class="specialdiet-option-desc">Vegetarisch</div>
           <div class="specialdiet-curve"></div>
         </div>
-        <div class="specialdiet-option" :class="{ selected: selectedDiet === 2 }" @click="toggleDiet(2)" tabindex="0"
-          @keydown.enter="toggleDiet(2)" role="button" aria-pressed="selectedDiet === 2">
+        <div class="specialdiet-option" :class="{ selected: dietType === 2 }" @click="toggleDiet(2)" tabindex="0"
+          @keydown.enter="toggleDiet(2)" role="button" :aria-pressed="dietType === 2">
           <div class="specialdiet-option-main">Ja</div>
           <div class="specialdiet-option-desc">Veganistisch</div>
           <div class="specialdiet-curve"></div>
         </div>
         <div class="specialdiet-option specialdiet-other-option"
-          :class="{ selected: selectedDiet === null && otherDiet }">
+          :class="{ selected: dietType === 3 }">
           <label class="specialdiet-other-label" for="otherDiet">Anders, namelijk:</label>
-          <input id="otherDiet" class="specialdiet-other-input" type="text" v-model="otherDiet"
-            :disabled="selectedDiet !== null" placeholder="Vul je eetpatroon in" @focus="selectedDiet = null" />
+          <input id="otherDiet" class="specialdiet-other-input" type="text" v-model="dietOther"
+            placeholder="Vul je eetpatroon in" @focus="dietType = 3" />
         </div>
       </div>
 
@@ -44,26 +44,49 @@
 </template>
 
 <script setup>
+import { onMounted, watch } from 'vue';
 import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { useCalculatorStore } from '@/stores/calculatorStats';
+import { storeToRefs } from 'pinia';
 
 const router = useRouter();
-
-const selectedDiet = ref(null);
-const otherDiet = ref('');
+const store = useCalculatorStore();
+const { dietType, dietOther } = storeToRefs(store);
 
 function toggleDiet(idx) {
-  if (selectedDiet.value === idx) {
-    selectedDiet.value = null;
-  } else {
-    selectedDiet.value = idx;
-    otherDiet.value = '';
+  if (dietType.value === idx) {
+    dietType.value = null; // Mapping null? Store expects integer. Let's use 0 as default/none?
+    // Actually UI sets selectedDiet to null if toggled off.
+    // If we want "None" (varied diet) that is index 0.
+    // Let's assume idx 0 is passed for "None".
+    // If the user clicks existing one, maybe it should deselect?
+    // But index 0 is "Nee" (Varied).
+    // If they click 0 and it's 0, stays 0?
+    // Let's just set it.
+    // Store: 0=None, 1=Veg, 2=Vegan.
+  }
+  dietType.value = idx;
+  if (idx !== 3) {
+    dietOther.value = '';
   }
 }
 
+// Special handling for OTHER (which we'll call index 3)
+// If otherDiet text is focused/changed, we set dietType to 3.
+watch(dietOther, (newVal) => {
+  if (newVal && dietType.value !== 3) {
+    dietType.value = 3;
+  }
+});
+
 function goToNext() {
+  store.updateState();
   router.push('/snackpages/diet-results');
 }
+
+onMounted(() => {
+  store.loadState();
+});
 </script>
 
 <style scoped>
