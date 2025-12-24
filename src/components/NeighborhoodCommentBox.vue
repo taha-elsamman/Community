@@ -1,6 +1,6 @@
 <template>
   <div class="flex align-items-center">
-    <img class="bankhangen-avatar" src="/Icons/user (3).png" alt="avatar" />
+    <img class="bankhangen-avatar" :src="profile_photo" alt="avatar" />
     <div class="bankhangen-form bankhangen-form-row" :style="{ border: borderColor }">
       <textarea class="bankhangen-input" placeholder="Reageer op de vraag"></textarea>
       <div class="bankhangen-input-actions">
@@ -34,7 +34,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { useAuthStore } from '@/stores/auth'
+import { ref, onMounted } from 'vue'
+
+const authStore = useAuthStore()
+const profile_photo = ref('')
+onMounted(async () => {
+  profile_photo.value = authStore.user['profile_photo'] || '/Icons/user (3).png'
+})
+
+
  defineProps({
   borderColor: { type: String, default: '1.5px dashed #e06ca9' },
   hideVraag: { type: Boolean, default: false }

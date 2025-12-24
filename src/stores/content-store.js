@@ -81,7 +81,7 @@ export const useContentStore = defineStore('content', {
       } else {
         // No start_date param, fetch all
         console.log('Fetching all menu data without start_date filter.');
-        return this._fetch('menu', () => api.get('/api/content/menu/'))
+        return this._fetch('menu', () => api.get('/api/content/recipes/'))
       }
     },
 
@@ -241,5 +241,5 @@ export const useContentStore = defineStore('content', {
       return this._fetch('recipes', () => api.get(url))
     },
 
-    
+
   }})
