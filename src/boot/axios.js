@@ -1,5 +1,8 @@
 import axios from 'axios'
 
+// Removed duplicate api declaration to avoid redeclaration error
+
+
 // Determine if we're in a cross-origin environment
 const isCrossOrigin = typeof window !== 'undefined' && (
   window.location.hostname === 'localhost' ||

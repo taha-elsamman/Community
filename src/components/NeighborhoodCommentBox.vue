@@ -18,7 +18,10 @@
               <option value="buurtgesprekken">Buurtgesprekken</option>
               <option value="succes">Succes</option>
               <option value="struggles">Struggles</option>
-              <option value="vraag">Vraag</option>
+              <option
+                v-if="!hideVraag"
+                value="vraag"
+              >Vraag</option>
             </select>
           </div>
           <div class="bankhangen-send-message">
@@ -32,9 +35,10 @@
 
 <script setup>
 import { ref } from 'vue'
-defineProps({
+ defineProps({
   borderColor: { type: String, default: '1.5px dashed #e06ca9' },
-});
+  hideVraag: { type: Boolean, default: false }
+})
 
 const selectedOption = ref('');
 </script>

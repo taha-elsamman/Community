@@ -12,8 +12,7 @@
       </div>
     </div>
 
-    <Profile/>
-
+    <Profile v-if="!first_name || first_name === 'Naam'" />
 
 
     <!-- De buurt section (added below existing content) -->
@@ -38,77 +37,17 @@
             <div class="buurt-form-desc">
               Deel wat jou bezighoudt, jouw bericht verschijnt meteen in de buurt.
             </div>
-            <input class="dashed-input" type="text" v-model="dailyStatus" />
-            <div class="buurt-form-actions">
-              <button @click="saveStatus" class="plaats-btn">Plaatsen</button>
-            </div>
+            <NeighborhoodCommentBox :hideVraag="true" ref="writeCommentBoxRef" />
           </div>
         </div>
       </div>
     </div>
 
     <!-- Macro’s berekenen section (added below all existing content) -->
-
     <div class="macro-section">
       <div class="macro-title mb-5">Macro’s berekenen</div>
+
       <AboutYou />
-      <!--
-      <div class="macro-card">
-        <div class="macro-title mb-5">Macro’s berekenen</div>
-        <div class="macro-header">Even over jou</div>
-        <div class="macro-desc">
-          Geen zorgen, we slaan niks geks op.<br>
-          Dit helpt alleen om een goed startpunt te berekenen.
-        </div>
-        <div class="macro-squiggle">
-          <svg width="240" height="24" viewBox="0 0 240 24" fill="none" style="display:inline-block;">
-            <path
-              d="M2 12 Q12 2, 22 12 T42 12 T62 12 T82 12 T102 12 T118 12 T138 12 T158 12 T178 12 T198 12 T218 12 T238 12"
-              stroke="#222" stroke-width="2" fill="none" />
-          </svg>
-        </div>
-        <div class="macro-form">
-          <div class="macro-row">
-            <div class="macro-col">
-              <div class="macro-label macro-label-pink">Wat is jouw geslacht?</div>
-              <div class="macro-gender-group">
-                <button class="macro-gender-btn" :class="{ active: selectedGender === 'vrouw' }"
-                  @click="selectGender('vrouw')" type="button">Vrouw</button>
-                <button class="macro-gender-btn" :class="{ active: selectedGender === 'man' }"
-                  @click="selectGender('man')" type="button">Man</button>
-              </div>
-            </div>
-            <div class="macro-col">
-              <div class="macro-label macro-label-pink">Wat is jouw leeftijd?</div>
-              <div class="macro-input-group">
-                <input class="macro-input" type="number" min="0" placeholder="" />
-                <span class="macro-input-unit">jaar</span>
-              </div>
-            </div>
-          </div>
-          <div class="macro-row">
-            <div class="macro-col">
-              <div class="macro-label macro-label-pink">Wat is jouw gewicht?</div>
-              <div class="macro-input-group">
-                <input class="macro-input" type="number" min="0" placeholder="" />
-                <span class="macro-input-unit">kg</span>
-              </div>
-            </div>
-            <div class="macro-col">
-              <div class="macro-label macro-label-pink">Wat is jouw lengte?</div>
-              <div class="macro-input-group">
-                <input class="macro-input" type="number" min="0" placeholder="" />
-                <span class="macro-input-unit">cm</span>
-              </div>
-            </div>
-          </div>
-          <div class="macro-footer">
-            <button class="macro-nav macro-nav-prev">Vorige</button>
-            <button class="macro-nav macro-nav-next" @click="goToSnackBodyTypes">Volgende</button>
-          </div>
-        </div>
-      </div>
-      -->
 
     </div>
   </div>
@@ -121,6 +60,7 @@ import { onMounted, ref, watch } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import AboutYou from '../SnackPages/AboutYou.vue'
 import Profile from '../Profile/Profile.vue'
+import NeighborhoodCommentBox from '@/components/NeighborhoodCommentBox.vue'
 const authStore = useAuthStore()
 
 const first_name = ref('Naam')
@@ -129,14 +69,12 @@ const user_name = ref('Naam')
 const status = ref('')
 const dailyStatus = ref('')
 const profileImageUrl = ref('/Icons/user (3).png')
-const fileInput = ref(null)
 
 const inputFirstName = ref('')
 const inputBio = ref('')
 const inputReason = ref('')
 const inputFavoriteHealthyHabit = ref('')
 
-const showSavedPopup = ref(false)
 
 // Set initial values safely (in case user is not loaded yet)
 function updateUserFields() {
@@ -164,44 +102,12 @@ watch(
   { immediate: true, deep: true }
 )
 
-
-async function saveStatus() {
-  try {
-    // Only send profile_photo if it's a File object, not a base64 string
-    const payload = {
-      profile: {
-        daily_status: dailyStatus.value,
-      }
-    }
-    // If you want to upload an image, use FormData and send the file, not a base64 string
-    if (fileInput.value && fileInput.value.files && fileInput.value.files[0]) {
-      const formData = new FormData()
-      formData.append('daily_status', dailyStatus.value)
-      //formData.append('profile_photo', fileInput.value.files[0])
-      await authStore.partialUpdateMe(formData)
-    } else {
-      await authStore.partialUpdateMe(payload)
-    }
-    await authStore.fetchMe()
-    updateUserFields()
-    showSavedPopup.value = true
-    setTimeout(() => {
-      showSavedPopup.value = false
-    }, 2000)
-  } catch {
-    alert('Opslaan mislukt')
-  }
-}
-
 onMounted(async () => {
   await authStore.fetchMe()
   updateUserFields()
 })
 
-
 </script>
-
-
 
 <style scoped>
 .homepage {
