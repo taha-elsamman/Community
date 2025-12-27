@@ -46,12 +46,12 @@ export const useCalculatorStore = defineStore('calculator', {
 
     palFactor(state) {
       // Mapping index 0-3 to factors
-      // 0: Mostly sitting (1.4)
-      // 1: Light things (1.6)
-      // 2: Quite active (1.8)
-      // 3: Heavy work (2.0)
-      const factors = [1.4, 1.6, 1.8, 2.0];
-      return factors[state.weekActivity] || 1.6;
+      // 0: Mostly sitting (1.2) - Sedentary
+      // 1: Light things (1.375) - Lightly active
+      // 2: Quite active (1.55) - Moderately active
+      // 3: Heavy work (1.725) - Very active
+      const factors = [1.2, 1.375, 1.55, 1.725];
+      return factors[state.weekActivity] || 1.375;
     },
 
     trainingMet(state) {
