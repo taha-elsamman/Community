@@ -7,18 +7,22 @@
       <div class="neighborhood-today-desc">
         Hoe sta jij op vandaag? Eén woord is genoeg.
       </div>
-      <div class="neighborhood-today-post">
-        <img class="neighborhood-avatar" src="/Icons/user (3).png" alt="avatar" />
+      <div class="neighborhood-today-post" v-if="todayPost">
+        <img class="neighborhood-avatar" :src="todayPost.author.photo || '/Icons/user (3).png'" alt="avatar" />
         <div class="neighborhood-post-content">
           <div class="neighborhood-post-header">
-            <span class="neighborhood-post-author"><em>Evelinn</em></span>
-            <span class="neighborhood-post-time">2d</span>
+            <span class="neighborhood-post-author"><em>{{ todayPost.author.first_name + ' ' + todayPost.author.last_name }}</em></span>
+            <span class="neighborhood-post-time">{{ formatRelativeTime(todayPost.created_at) }}</span>
           </div>
-          <div class="neighborhood-post-meta">Houdt van wandelen na het eten</div>
-          <div class="neighborhood-post-body">Energiek!</div>
+          <div class="neighborhood-post-meta">{{ todayPost.author.status }}</div>
+          <div class="neighborhood-post-body">{{ todayPost.content }}</div>
           <div class="neighborhood-post-actions">
-            <span class="neighborhood-action">Like</span>
-            <span class="neighborhood-action" @click="focusWriteCommentBox">Reageer</span>
+            <span class="neighborhood-action">
+              <template v-if="todayPost.likes > 0">{{ todayPost.likes }} </template>Like{{ todayPost.likes !== 0 && todayPost.likes !== 1 ? 's' : '' }}
+            </span>
+            <span class="neighborhood-action" @click="focusWriteCommentBox">
+              <template v-if="todayPost.comments_count > 0">{{ todayPost.comments_count }} </template>Reageer{{ todayPost.comments_count !== 0 && todayPost.comments_count !== 1 ? 's' : '' }}
+            </span>
             <span class="neighborhood-action">Melden</span>
           </div>
         </div>
@@ -33,7 +37,11 @@
         <div class="bankhangen-community-desc">Dit is wat er vandaag leeft in de buurt.</div>
         <div class="bankhangen-community-list">
 
-          <NeighborhoodCommentBox ref="writeCommentBoxRef" />
+          <NeighborhoodCommentBox
+            ref="writeCommentBoxRef"
+            @postCreated="refreshPosts"
+            :profile-photo="todayPost?.author?.photo || undefined"
+          />
 
           <!-- Category Filter Menu -->
           <div class="category-menu">
@@ -41,20 +49,37 @@
               v-for="cat in categories"
               :key="cat.value"
               :class="['category-menu-item', { active: selectedCategory === cat.value }]"
-              @click="selectedCategory = cat.value"
+              @click="onTabClick(cat.value)"
               tabindex="0"
-              @keydown.enter="selectedCategory = cat.value"
+              @keydown.enter="onTabClick(cat.value)"
             >
               {{ cat.label }}
             </span>
           </div>
 
-          <!-- Filtered Comments -->
+          <!-- Use neighborhoodPosts for CommentBox -->
           <CommentBox
-            v-for="comment in filteredComments"
+            v-for="comment in neighborhoodPosts"
             :key="comment.id"
-            v-bind="comment"
+            v-bind="mapNeighborhoodPostToCommentBox(comment)"
           />
+         <div class="lifestyle-pagination">
+           <button class="pagination-arrow" :disabled="currentPage === 1" @click="changePage(currentPage - 1)">
+             <img src="/Icons/Webp/Pagination arrow.webp" alt="Vorige" class="pagination-arrow-img left" />
+           </button>
+           <button
+             v-for="page in visiblePages"
+             :key="page"
+             class="pagination-page"
+             :class="{ active: page === currentPage }"
+             @click="changePage(page)"
+           >
+             {{ page }}
+           </button>
+           <button class="pagination-arrow" :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">
+             <img src="/Icons/Webp/Pagination arrow.webp" alt="Volgende" class="pagination-arrow-img right" />
+           </button>
+         </div>
         </div>
 
       </div>
@@ -64,82 +89,173 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import CommentBox from '@/components/CommentBox.vue'
 import NeighborhoodCommentBox from '@/components/NeighborhoodCommentBox.vue'
+import { useSocialStore } from '@/stores/social-store'
+
+const socialStore = useSocialStore()
 
 const writeCommentBoxRef = ref(null)
 const communityHeaderRef = ref(null)
+const todayPost = ref(null)
 
-function focusWriteCommentBox() {
-  // Focus textarea and scroll "Deel iets in de buurt" into view
-  if (writeCommentBoxRef.value?.$el) {
-    const textarea = writeCommentBoxRef.value.$el.querySelector('textarea')
-    if (textarea) textarea.focus()
-  }
-  if (communityHeaderRef.value) {
-    communityHeaderRef.value.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  }
-}
-
-// Categories for the filter menu
+// Tabs/categories
 const categories = [
   { label: 'Alles', value: 'all' },
-  { label: 'Buurtgesprekken', value: 'buurtgesprekken' },
+  { label: 'Buurtgesprekken', value: 'conversation' },
   { label: 'Succes', value: 'success' },
   { label: 'Struggles', value: 'struggles' },
-  { label: 'Vraag', value: 'vraag' }
+  { label: 'Vraag', value: 'question' }
 ]
 const selectedCategory = ref('all')
 
-// Example comments data
-const comments = [
-  {
-    id: 1,
-    type: 'success',
-    typeLabel: 'Succes',
-    avatar: '/Icons/user (3).png',
-    author: 'Loukie',
-    time: '2d',
-    meta: 'Houdt van wandelen na het eten',
-    body: 'Bear claw liquorice brownie caramels donut cake gummies gingerbread. Chupa chups pastry bonbon donut gummi bears pastry chupa chups chocolate cake. I love dragée sesame snaps macaroon gummi bears macaroon I love.'
-  },
-  {
-    id: 2,
-    type: 'struggles',
-    typeLabel: 'Struggles',
-    avatar: '/Icons/user (3).png',
-    author: 'Loukie',
-    time: '4h',
-    meta: 'Houdt van wandelen na het eten',
-    body: 'Cupcake ipsum dolor sit amet pie jelly-o candy. Tart I love I love marzipan pie pie chocolate bonbon donut. Halvah marzipan gingerbread I love I love cotton candy biscuit. Cupcake oat cake gummi bears bonbon brownie ice cream biscuit.'
-  },
-  {
-    id: 3,
-    type: 'vraag',
-    typeLabel: 'Vraag',
-    avatar: '/Icons/user (3).png',
-    author: 'Loukie',
-    time: '1d',
-    meta: 'Houdt van wandelen na het eten',
-    body: 'Danish icing lemon drops cheesecake ice cream jelly-o icing I love. Sesame snaps brownie I love candy canes cotton candy. Sugar plum I love gummies gummi bears I love cookie I love chocolate.'
-  },
-  {
-    id: 4,
-    type: 'buurtgesprekken',
-    typeLabel: 'Buurtgesprekken',
-    avatar: '/Icons/user (3).png',
-    author: 'Loukie',
-    time: '3h',
-    meta: 'Houdt van wandelen na het eten',
-    body: 'Dit is een buurtgesprek voorbeeld.'
-  }
-]
-
-const filteredComments = computed(() => {
-  if (selectedCategory.value === 'all') return comments
-  return comments.filter(c => c.type === selectedCategory.value)
+// Store posts per tab
+const postsByCategory = ref({
+  all: []
 })
+
+const currentPage = ref(1)
+const totalPages = ref(1)
+const pageSize = 10
+
+const neighborhoodPosts = computed(() => {
+  if (selectedCategory.value === 'all') {
+    return postsByCategory.value.all
+  }
+  return postsByCategory.value[selectedCategory.value] || []
+})
+
+onMounted(async () => {
+  await socialStore.fetchPosts({ page: 1, page_size: 1, type: 'neighborhood', user_id: 3 })
+  todayPost.value = socialStore.posts[0] || null
+
+  // Only fetch 'all' tab initially
+  await fetchNeighborhoodPosts('all', 1)
+})
+
+function onTabClick(tabValue) {
+  if (selectedCategory.value !== tabValue) {
+    selectedCategory.value = tabValue
+    currentPage.value = 1
+    fetchNeighborhoodPosts(tabValue, 1)
+  }
+}
+
+async function fetchNeighborhoodPosts(tabValue, page = 1) {
+  // For 'all', do NOT send category param at all
+  const params = {
+    page,
+    page_size: pageSize,
+    type: 'neighborhood'
+  }
+  if (tabValue !== 'all') {
+    params.category = tabValue
+  }
+  await socialStore.fetchPosts(params)
+  postsByCategory.value[tabValue] = socialStore.posts
+  totalPages.value = Math.max(1, Math.ceil((socialStore.totalCount || 0) / pageSize))
+}
+
+function changePage(page) {
+  if (page < 1 || page > totalPages.value) return
+  currentPage.value = page
+  fetchNeighborhoodPosts(selectedCategory.value, page)
+}
+
+const visiblePages = computed(() => {
+  // Show max 5 pages, center current page if possible
+  const pages = []
+  let start = Math.max(1, currentPage.value - 1)
+  let end = Math.min(totalPages.value, start + 2)
+  if (end - start < 2) start = Math.max(1, end - 2)
+  for (let i = start; i <= end; i++) pages.push(i)
+  return pages
+})
+
+
+
+// Map API post to CommentBox props
+function mapNeighborhoodPostToCommentBox(post) {
+  return {
+    id: post.id,
+    type: post.type || '',
+    typeLabel: post.category === 'success' ? 'Succes'
+      : post.category === 'struggles' ? 'Struggles'
+      : post.category === 'vraag' ? 'Vraag'
+      : post.category === 'buurtgesprekken' ? 'Buurtgesprekken'
+      : post.category === 'conversation' ? 'Buurtgesprekken'
+      : post.category === 'question' ? 'Vraag'
+      : post.type || '',
+    avatar: post.author?.photo || '/Icons/user (3).png',
+    author: (post.author?.first_name && post.author?.last_name)
+      ? `${post.author.first_name} ${post.author.last_name}`
+      : post.author?.username || post.author?.id || '',
+    status: post.author?.status || '',
+    time: post.created_at,
+    meta: post.category || '',
+    body: post.content || '',
+    color: '#e06ca9',
+    replies: post.replies || [],
+    likesCount: post.likes || 0,
+    isLiked: post.is_liked || false,
+    userId: post.author?.id || '',
+    commentId: post.id,
+    // Add other props as needed
+  }
+}
+
+function formatRelativeTime(dateStr) {
+  if (!dateStr) return ''
+  const now = new Date()
+  const date = new Date(dateStr)
+  const diffMs = now - date
+  const diffSec = Math.floor(diffMs / 1000)
+  if (diffSec < 60) return `${diffSec} sec`
+  const diffMin = Math.floor(diffSec / 60)
+  if (diffMin < 60) return `${diffMin} min`
+  const diffHr = Math.floor(diffMin / 60)
+  if (diffHr < 24) return `${diffHr} uur`
+  const diffDay = Math.floor(diffHr / 24)
+  if (diffDay < 7) return `${diffDay} dag${diffDay > 1 ? 'en' : ''}`
+  const diffWk = Math.floor(diffDay / 7)
+  if (diffWk < 4) return `${diffWk} week${diffWk > 1 ? 'en' : ''}`
+  const diffMo = Math.floor(diffDay / 30)
+  if (diffMo < 12) return `${diffMo} maand${diffMo > 1 ? 'en' : ''}`
+  const diffYr = Math.floor(diffDay / 365)
+  return `${diffYr} jaar${diffYr > 1 ? 'en' : ''}`
+}
+
+function refreshPosts() {
+  fetchNeighborhoodPosts(selectedCategory.value, currentPage.value)
+  socialStore.fetchPosts({ page: 1, page_size: 1, type: 'neighborhood', user_id: 3 }).then(() => {
+    todayPost.value = socialStore.posts[0] || null
+  })
+}
+
+function focusWriteCommentBox() {
+  // Pure JavaScript, no jQuery
+  nextTick(() => {
+    const refComp = writeCommentBoxRef.value
+    let el = null
+    if (refComp && refComp.$el) {
+      el = refComp.$el
+    }
+    // Scroll into view using native JS
+    if (el && typeof el.scrollIntoView === 'function') {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+    // Set dropdown to "Vraag" using v-model
+    if (refComp && typeof refComp.selectedOption !== 'undefined') {
+      refComp.selectedOption = 'vraag'
+    }
+    // Focus textarea using native JS
+    if (el) {
+      const textarea = el.querySelector && el.querySelector('textarea')
+      if (textarea) textarea.focus()
+    }
+  })
+}
 </script>
 
 <style scoped>
@@ -469,7 +585,7 @@ padding: 5rem 2rem 2rem 5rem;
 .neighborhood-action {
   cursor: pointer;
   transition: color 0.2s;
-  color: #e06ca9;
+  color: #888;
   font-size: 1.01rem;
   font-family: inherit;
 }
@@ -587,4 +703,17 @@ padding: 5rem 2rem 2rem 5rem;
     padding: 0.3rem 0;
   }
 }
+
+.lifestyle-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 2rem 0 1rem 0;
+  font-family: 'Indie Flower', cursive, sans-serif;
+  font-size: 0.8rem;
+}
+
+
+
 </style>

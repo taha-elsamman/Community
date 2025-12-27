@@ -1,8 +1,17 @@
 <template>
-  <div class="flex align-items-center">
-    <img class="bankhangen-avatar" :src="profile_photo" alt="avatar" />
+  <div class="flex writeComment">
+    <img
+      v-if="!hideVraag"
+      class="bankhangen-avatar"
+      :src="profilePhoto"
+      alt="avatar"
+    />
     <div class="bankhangen-form bankhangen-form-row" :style="{ border: borderColor }">
-      <textarea class="bankhangen-input" placeholder="Reageer op de vraag"></textarea>
+      <textarea
+        class="bankhangen-input"
+        placeholder="Reageer op de vraag"
+        v-model="commentText"
+      ></textarea>
       <div class="bankhangen-input-actions">
         <div class="bankhangen-comment-btns">
           <!--          <img src="/Icons/happy.png" alt="happy btn" width="20" />
@@ -25,31 +34,78 @@
             </select>
           </div>
           <div class="bankhangen-send-message">
-            <img src="/Icons/send-message.png" alt="send btn" width="25" />
+            <img src="/Icons/send-message.png" alt="send btn" width="25" @click="submitPost" />
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div v-if="showSuccess" class="success-notification">
+    Je bericht is succesvol geplaatst!
+  </div>
 </template>
 
 <script setup>
 import { useAuthStore } from '@/stores/auth'
-import { ref, onMounted } from 'vue'
+import { useSocialStore } from '@/stores/social-store'
+import { ref } from 'vue'
 
 const authStore = useAuthStore()
-const profile_photo = ref('')
-onMounted(async () => {
-  profile_photo.value = authStore.user['profile_photo'] || '/Icons/user (3).png'
-})
-
-
- defineProps({
+const socialStore = useSocialStore()
+defineProps({
   borderColor: { type: String, default: '1.5px dashed #e06ca9' },
-  hideVraag: { type: Boolean, default: false }
+  hideVraag: { type: Boolean, default: false },
+  profilePhoto: { type: String, default: '/Icons/Webp/User male.webp' }
 })
 
-const selectedOption = ref('');
+const emit = defineEmits(['postCreated'])
+
+const selectedOption = ref('')
+const commentText = ref('')
+const showSuccess = ref(false)
+
+const categoriesMap = {
+  buurtgesprekken: 'conversation',
+  succes: 'success',
+  struggles: 'struggles',
+  vraag: 'question'
+}
+
+async function submitPost() {
+  if (!selectedOption.value) {
+    alert('Selecteer een categorie')
+    return
+  }
+  if (!commentText.value.trim()) {
+    alert('Bericht mag niet leeg zijn')
+    return
+  }
+  const apiCategory = categoriesMap[selectedOption.value] || selectedOption.value
+  try {
+    await socialStore.createPost({
+      author: {
+        first_name: authStore.user?.first_name || '',
+        last_name: authStore.user?.last_name || ''
+      },
+      category: apiCategory,
+      type: 'neighborhood',
+      content: commentText.value,
+      video_url: ''
+    })
+    commentText.value = ''
+    selectedOption.value = ''
+    showSuccess.value = true
+    setTimeout(() => { showSuccess.value = false }, 2000)
+    emit('postCreated')
+    // Optionally emit an event or refresh posts here
+  } catch {
+    alert('Plaatsen mislukt')
+  }
+}
+
+defineExpose({
+  selectedOption
+})
 </script>
 
 <style scoped>
@@ -62,7 +118,11 @@ const selectedOption = ref('');
   padding: 1.2rem 1.5rem;
   gap: 1.2rem;
 }
-
+.writeComment {
+    display: flex;
+  align-items: start;
+  gap: 1.2rem;
+}
 .bankhangen-avatar {
   width: 60px;
   height: 60px;
@@ -162,6 +222,29 @@ const selectedOption = ref('');
 
 .bankhangen-dropdown:focus {
   border-color: #da2c89;
+}
+
+.success-notification {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #e06ca9;
+  color: #fff;
+  padding: 0.8rem 2.2rem;
+  border-radius: 12px;
+  font-size: 1.15rem;
+  font-family: inherit;
+  font-weight: 500;
+  box-shadow: 0 2px 12px rgba(224, 108, 169, 0.15);
+  z-index: 9999;
+  animation: fadeInOut 2s;
+}
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.95);}
+  10% { opacity: 1; transform: translateX(-50%) scale(1);}
+  90% { opacity: 1; transform: translateX(-50%) scale(1);}
+  100% { opacity: 0; transform: translateX(-50%) scale(0.95);}
 }
 
 @media (max-width: 900px) {

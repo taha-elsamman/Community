@@ -62,11 +62,24 @@
     </div>
     <div class="recipes-sub">Alle gerechten uit jouw weekmenu’s overzichtelijk bij elkaar.</div>
     <div class="recipes-list">
-      <div v-for="item in recipesSectionItems" :key="item.id" class="recipe-card" @click="goToDetails(item.id)"
-        role="button" tabindex="0" @keydown.enter="goToDetails(item.id)">
-        <div class="recipe-img-wrap">
-          <img :src="item.image ? (item.image.startsWith('http') ? item.image : 'https://community.projectlifestyle.nl/' + item.image.replace(/^\/+/, '')) : '/photos/default.jpg'" alt="recipe photo" class="recipe-photo" />
+      <div
+        v-for="item in recipesSectionItems"
+        :key="item.id"
+        class="recipe-card"
+        @click="goToDetails(item.id)"
+        role="button"
+        tabindex="0"
+        @keydown.enter="goToDetails(item.id)"
+      >
+        <div class="recipe-img-wrap stacked-imgs">
+          <img class="weekmenu-layout" src="/borders/Frame Recipe archives.webp" :alt="imgAlt" />
+          <img
+            :src="item.image ? (item.image.startsWith('http') ? item.image : 'https://community.projectlifestyle.nl/' + item.image.replace(/^\/+/, '')) : '/photos/default.jpg'"
+            alt="recipe photo"
+            class="recipe-photo"
+          />
         </div>
+
         <div class="recipe-meta">
           <div class="recipe-title-row">
             <div class="recipe-title">{{ item.name }}</div>
@@ -177,6 +190,7 @@ const dayData = computed(() => {
   // Assume first menu (active week)
   const week = menu.value[0]
   if (!week || !week.days) return null
+  console.log('Selected day data:', week.days[selectedDay.value])
   return week.days[selectedDay.value] || null
 })
 
@@ -377,10 +391,8 @@ function goToRecipes() {
 
 .recipes-list {
   display: flex;
-  gap: 4rem;
   justify-content: center;
   align-items: center;
-  margin-top: 1.5rem;
 }
 
 .recipe-card {
@@ -399,19 +411,35 @@ function goToRecipes() {
   overflow: hidden;
   margin-bottom: 0.7rem;
   margin-right: 2rem;
-  background: #fff;
-  border: 1px solid #eef4fb;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
-.recipe-photo {
-  width: 110px;
-  height: 110px;
+/* Stack the frame and photo above each other */
+.stacked-imgs {
+  position: relative;
+}
+.stacked-imgs .weekmenu-layout {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 150px;
+  height: 130px;
+  z-index: 2;
+  pointer-events: none;
+}
+.stacked-imgs .recipe-photo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 120px;
   object-fit: cover;
   border-radius: 50%;
   background: #fff;
+  z-index: 1;
 }
 
 .recipe-meta {
@@ -442,6 +470,7 @@ function goToRecipes() {
   width: 28px;
   height: 28px;
   cursor: pointer;
+  margin-right: 4rem;
 }
 
 .fav-img {
@@ -512,6 +541,12 @@ function goToRecipes() {
 }
 
 @media (max-width: 600px) {
+
+  .recipes-container {
+  margin: 4rem auto 0rem 0rem;
+}
+
+
   .weekmenu-title {
     font-size: 1.2rem;
   }
